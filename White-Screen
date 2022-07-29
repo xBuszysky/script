@@ -2,7 +2,7 @@ repeat wait() until game:IsLoaded()
 if game.Players.LocalPlayer.Name == "botbuszysky01"
 or game.Players.LocalPlayer.Name == "botbuszysky02"
 or game.Players.LocalPlayer.Name == "botbuszysky03"
-or game.Players.LocalPlayer.Name == "AutoFarmIslands"
+or game.Players.LocalPlayer.Name == "AutoFarmIslands" 
 or game.Players.LocalPlayer.Name == "umbell01"
 or game.Players.LocalPlayer.Name == "umbell02"
 or game.Players.LocalPlayer.Name == "umbell07"
