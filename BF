@@ -1,0 +1,90 @@
+repeat wait() until game:IsLoaded()
+spawn(function()
+   while wait() do 
+        pcall(setfpscap, 10)
+        pcall(set_fps_cap, 10)
+    end 
+end)
+
+
+if game.PlaceId == 2753915549 or game.PlaceId == 4442272183 or game.PlaceId == 7449423635 then -- BF
+wait(20)
+repeat wait(20) until game:IsLoaded() --ต้องใส่ตลอดถ้าใช้ synx ไอควายจำใส่สมองเอาไว้
+_BuyFruitSinper = true -- true or false
+_SelectDevil = {"Dark-Dark"}--   "Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Spin-Spin","Bird: Falcon","Smoke-Smoke","Flame-Flame","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"
+
+
+_FPS_Boost = true
+_AutoFarm = true --"Level , Bone"   "Level"  "Bone"
+_Fullystats = true
+_AutoMeleeWeapon = true
+_Make_Melee = {"Superhuman","Electric Claw","Dargon Talon","Sharkman Karate","Death Step"}
+_AutoRedeem = true
+_RedeemOnLv = 10
+_BuyHaki = true
+_RandomFruit = true
+_StoreFruit = true
+_BringFruit = true
+_BuyBisento = true
+_BuyCommon = true
+_Mastery_Farm = true
+_Mastery_Mode = "Fruit on 2300"
+if game.PlaceId == 2753915549 then -- sea1
+    _Farm_Mode = "Level"
+    _autoSea2 = true
+    _Open_Saber = true
+    _Pole_v1 = true
+elseif game.PlaceId == 4442272183 then -- sea2
+    _Farm_Mode = "Level"
+    _autoSea3 = true
+    _Bartilo = true
+    _AutoFlower = true
+    _AutoDarkbeard = true
+    _BuyEctoplasItem = true
+    _BuyKabcha = true
+    _AutoRaid = true
+    _RaidMode = "Awake Skill"-- "Raid Normal" , "Awake Skill"
+    _GetFruit_Method = "FruitInventory + BringFruit + Hop"-- "BringFruit" , "BringFruit + Hop" , "FruitInventory" , "FruitInventory + BringFruit" , "FruitInventory + BringFruit + Hop"
+elseif game.PlaceId == 7449423635 then -- sea3
+    _Farm_Mode = "Level , Bone"
+    _BoneTrade = true
+    _AutoRaid = true
+    _RaidMode = "Awake Skill"-- "Raid Normal" , "Awake Skill"
+    _GetFruit_Method = "FruitInventory + BringFruit + Hop"-- "BringFruit" , "BringFruit + Hop" , "FruitInventory" , "FruitInventory + BringFruit" , "FruitInventory + BringFruit + Hop"
+    _BuyEctoplasItem = true
+    _BuyKabcha = true
+    _BuddySword = true
+    _AutoScythe = true
+    _AutoRipIndra = true
+    _Canvander = true
+    _AutoCakePrince = true
+    _EliteHunt = true
+    _Tushita = true
+    _Elite_mode = "Yama"
+end
+_HideUI = true
+
+
+-- [[ EN: Config Here Description: Please Delete This Line and Replace with Your Script Config TH: วางคอนฟิกตรงนี้ คำอธิบาย: ลบบรรทัดนี้ออกให้หมดเเล้วเเทนที่ด้วยคอนฟิก ]] --
+local isExecuted = false
+local request = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or getgenv().request or request
+
+task.spawn(function()
+	repeat task.wait() until isExecuted == true
+	-- [[ EN: External Script Here Description: Please Deleted This Line and Replace with Your External Tools Link HopServer TH: วางสคริปเเยกตรงนี้ คำอธิบาย: ลบบรรทัดนี้ออกให้หมดเเล้วแทนที่ด้วยสคริปเเยกอย่างเช่น kaitan tools ]] --
+end);
+
+(function()
+	_G.Key = 'Table-PFEV-WN96-H0LL-ZP7Z'
+	_G.DiscordId = '450636362471833610'
+	local Status, Script;
+	repeat
+	    task.wait()
+	    Status, Script = pcall(request, { Url = 'https://www.tablehub.net/api/v2/script' });
+	until
+	    Status == true and Script ~= nil
+	    
+	loadstring(Script.Body)();
+	isExecuted = true
+end)()    -- Script Here    
+end
