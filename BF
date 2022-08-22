@@ -1,13 +1,11 @@
-repeat wait() until game:IsLoaded()
-while wait() do 
-pcall(setfpscap, 15)
-pcall(set_fps_cap, 15)
-end
-
-
+repeat wait() until game:IsLoaded() 
+spawn(function()
+   while wait() do 
+        pcall(setfpscap, 10)
+        pcall(set_fps_cap, 10)
+    end 
+end)
 if game.PlaceId == 2753915549 or game.PlaceId == 4442272183 or game.PlaceId == 7449423635 then -- BF
-wait(20)
-repeat wait(20) until game:IsLoaded() --ต้องใส่ตลอดถ้าใช้ synx ไอควายจำใส่สมองเอาไว้
 _BuyFruitSinper = true -- true or false
 _SelectDevil = {"Dark-Dark"}--   "Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Spin-Spin","Bird: Falcon","Smoke-Smoke","Flame-Flame","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"
 
@@ -84,5 +82,7 @@ end);
 	    
 	loadstring(Script.Body)();
 	isExecuted = true
-end)()    -- Script Here    
+end)()
+else 
+return
 end
