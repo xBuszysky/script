@@ -5,9 +5,9 @@ spawn(function()
         pcall(set_fps_cap, 10)
     end 
 end)
+
 if game.PlaceId == 10321372166 then  -- Pet X 
-wait(10)
-loadstring(game:HttpGet('https://pastebin.com/raw/fttSzNs8'))()
-wait(10)
-loadstring(game:HttpGet"https://rawscripts.net/raw/Project-Meow_421")()-- Script Here    
-   end
+    loadstring(game:HttpGet('https://pastebin.com/raw/fttSzNs8'))()
+    wait(5)
+    loadstring(game:HttpGet"https://rawscripts.net/raw/Project-Meow_421")()
+end
