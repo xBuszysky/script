@@ -5,7 +5,7 @@ spawn(function()
         pcall(set_fps_cap, 10)
     end 
 end)
-
+game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 if game.PlaceId == 10321372166 then  -- Pet X 
     loadstring(game:HttpGet('https://pastebin.com/raw/fttSzNs8'))()
     wait(5)
