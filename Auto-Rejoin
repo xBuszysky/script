@@ -1,14 +1,3 @@
-repeat wait() until game:IsLoaded()
-if game.Players.LocalPlayer.Name == "botbuszysky01"
-or game.Players.LocalPlayer.Name == "botbuszysky02"
-or game.Players.LocalPlayer.Name == "botbuszysky03"
-or game.Players.LocalPlayer.Name == "AutoFarmlslands"
-or game.Players.LocalPlayer.Name == "Umbell01"
-or game.Players.LocalPlayer.Name == "Umbell02"
-or game.Players.LocalPlayer.Name == "umbell07"
-or game.Players.LocalPlayer.Name == "umbell09"
-or game.Players.LocalPlayer.Name == ""
-then
 print("Rejoin On Kick Script Loaded Successfully")
 while true do wait()
 getgenv().rejoin = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(Kick)
@@ -16,5 +5,4 @@ getgenv().rejoin = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.Chil
         game:GetService("TeleportService"):Teleport(game.PlaceId)
     end
 end)
-end
 end
