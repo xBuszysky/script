@@ -1,14 +1,8 @@
-repeat wait() until game:IsLoaded()
-if game.Players.LocalPlayer.Name == "botbuszysky01"
-or game.Players.LocalPlayer.Name == "botbuszysky02"
-or game.Players.LocalPlayer.Name == "botbuszysky03"
-or game.Players.LocalPlayer.Name == "AutoFarmlslands" 
-or game.Players.LocalPlayer.Name == "Umbell01"
-or game.Players.LocalPlayer.Name == "Umbell02"
-or game.Players.LocalPlayer.Name == "umbell07"
-or game.Players.LocalPlayer.Name == "umbell09"
-or game.Players.LocalPlayer.Name == ""
-then
+local count = 0
+repeat
+    
+    wait(1)
+    
 local WindowFocusReleasedFunction = function()
 	RunService:Set3dRenderingEnabled(false)
 	setfpscap(10)
@@ -38,4 +32,6 @@ local Initialize = function()
 	return
 end
 Initialize()
-end
+ count += 1
+until
+count ==99999999
