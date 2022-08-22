@@ -6,7 +6,8 @@ spawn(function()
     end 
 end)
 if game.PlaceId == 10321372166 then  -- Pet X 
+wait(10)
 loadstring(game:HttpGet('https://pastebin.com/raw/fttSzNs8'))()
-wait(20
+wait(10)
 loadstring(game:HttpGet"https://rawscripts.net/raw/Project-Meow_421")()-- Script Here    
    end
