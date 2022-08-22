@@ -1,11 +1,4 @@
-local count = 0
-repeat
-    
-    wait(1)
-    
-local RunService = game:GetService("RunService")
-RunService:Set3dRenderingEnabled(false)
-	setfpscap(10)
-	 count += 1
-until
-count ==999999999
+while wait() do 
+pcall(setfpscap, 10)
+pcall(set_fps_cap, 10)
+end
