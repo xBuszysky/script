@@ -1,0 +1,7 @@
+local count = 0
+repeat
+    wait(60)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/xSynZX2F/SynZ/main/SynZHUB",true))();
+ count += 1
+until
+count ==99999
