@@ -1,4 +1,4 @@
-wait(20)
+wait(30)
 repeat wait() until game:IsLoaded()
 if game.PlaceId == 3475397644 or game.PlaceId == 4869039553 then
 _G.AutoFarm = true
