@@ -83,13 +83,23 @@ spawn(function()
 							elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude < 15 then
 								game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
 								game:GetService("VirtualInputManager"):SendKeyEvent(false, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
-                            elseif not getClosestFarm() then
-                                game.Players.localPalyer.Character.Humanoid.Health = 0
 							end
 						end
 					end
 				end)
 			end
+		end
+	end)
+end)
+spawn(function()
+	pcall(function()
+		while wait(10) do
+            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude > 15 or not getClosestFarm() then
+                Notification(1, "SmellLikehacker Hub", "reseted character", 1)
+                game.Players.localPalyer.Character.Humanoid.Health = 0
+            elseif getClosestFarm() then
+                Notification(1, "SmellLikehacker Hub", "non reset character", 1)
+            end
 		end
 	end)
 end)
