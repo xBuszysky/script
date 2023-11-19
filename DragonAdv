@@ -1,141 +1,105 @@
 wait(30)
 repeat wait() until game:IsLoaded()
-if game.PlaceId == 3475397644 or game.PlaceId == 4869039553 then
-_G.AutoFarm = true
-loadstring(game:HttpGet("https://raw.githubusercontent.com/SmellLikeHacker/IDK/main/Notification"))();
-wait()
-Notification(1, "SmellLikehacker Hub", "Started", 9e9)
-if game.Players.LocalPlayer.PlayerGui:FindFirstChild("IntroFrame") then
-	local Eh = game.Players.LocalPlayer.PlayerGui.IntroGui.IntroFrame.PlayButton
-	Eh.Size = UDim2.new(8999999488, 8999999488, 8999999488, 8999999488)
-	wait(1)
-	game:GetService("VirtualUser"):ClickButton1(Vector2.new(8999999488, 8999999488))
-	wait(1)
-	Eh.Size = UDim2.new(0, 0, 0, 0)
-end
-
-game.Players.LocalPlayer.PlayerGui.NodeGui.BoostFrame.ChildAdded:Connect(function(v)
-	if ((v.ClassName == "Frame") and v:FindFirstChild("ClickButton")) then
-		wait(0.5)
-		firesignal(v.ClickShadowButton.MouseButton1Down)
-		firesignal(v.ClickButton.MouseButton1Down)
-		wait(0.5)
-		firesignal(v.ClickShadowButton.MouseButton1Up)
-		firesignal(v.ClickButton.MouseButton1Up)
+if ((game.PlaceId == 3475397644) or (game.PlaceId == 4869039553)) then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/SmellLikeHacker/IDK/main/Notification"))()
+	wait()
+	Notification(1, "SmellLikehacker Hub", "Started", 9e9)
+	if game.Players.LocalPlayer.PlayerGui:FindFirstChild("IntroFrame") then
+		local Eh = game.Players.LocalPlayer.PlayerGui.IntroGui.IntroFrame.PlayButton
+		Eh.Size = UDim2.new(8999999488, 8999999488, 8999999488, 8999999488)
+		wait(1)
+		game:GetService("VirtualUser"):ClickButton1(Vector2.new(8999999488, 8999999488))
+		wait(1)
+		Eh.Size = UDim2.new(0, 0, 0, 0)
 	end
-end)
-
-game:service("Players").LocalPlayer.Idled:connect(function()
-	game:service("VirtualUser"):CaptureController()
-	game:service("VirtualUser"):ClickButton2(Vector2.new())
-	game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 2, 0, true, game, 1)
-	game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 2, 0, false, game, 1)
-end)
-
-local function sellallnormal()
-	game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "Coconut",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value)})
-	game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "Avacado",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Avacado.Value)})
-	game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "CacaoBean",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.CacaoBean.Value)})
-end
-local function getClosestFarm()
-    local dist, thing = math.huge
-	for i, v in pairs(Workspace.Interactions.Nodes.Harvest["Food"].ActiveNodes:GetChildren()) do
-		if (v:IsA("Model") and v:FindFirstChildWhichIsA("BasePart")) then
-            local mag = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v:FindFirstChildWhichIsA("BasePart").Position).magnitude
-            if mag < dist then
-                dist = mag 
-                thing = v
-            end
-        end
-    end
-    return thing
-end
-spawn(function()
-	pcall(function()
+	game.Players.LocalPlayer.PlayerGui.NodeGui.BoostFrame.ChildAdded:Connect(function(v)
+		if ((v.ClassName == "Frame") and v:FindFirstChild("ClickButton")) then
+			wait(0.5)
+			firesignal(v.ClickShadowButton.MouseButton1Down)
+			firesignal(v.ClickButton.MouseButton1Down)
+			wait(0.5)
+			firesignal(v.ClickShadowButton.MouseButton1Up)
+			firesignal(v.ClickButton.MouseButton1Up)
+		end
+	end)
+	game:service("Players").LocalPlayer.Idled:connect(function()
+		game:service("VirtualUser"):CaptureController()
+		game:service("VirtualUser"):ClickButton2(Vector2.new())
+		game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 2, 0, true, game, 1)
+		game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 2, 0, false, game, 1)
+	end)
+	local function sellallnormal()
+		game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="Coconut",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value)})
+		game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="Avacado",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Avacado.Value)})
+		game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="CacaoBean",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.CacaoBean.Value)})
+	end
+	local function getClosestFarm()
+		local dist, thing = math.huge
+		for i, v in pairs(Workspace.Interactions.Nodes.Harvest['Food'].ActiveNodes:GetChildren()) do
+			local mag = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.WorldPivot.Position).magnitude
+			if (mag < dist) then
+				dist = mag
+				thing = v
+			end
+		end
+		return thing
+	end
+	spawn(function()
 		Notification(1, "SmellLikehacker Hub", "Waiting for data", 65)
 		wait(65)
 		while wait(1) do
-			if _G.AutoFarm == true then
-				pcall(function()
-					if tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value) >= 10000 then
-						if game.PlaceId == 3475397644 then
-							wait(1)
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellFarmMerchantRemote"):FireServer(10000)
-							wait(1)
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "Coconut",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value)})
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "Avacado",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Avacado.Value)})
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({["ItemName"] = "CacaoBean",["Amount"] = tonumber(game:GetService("Players").LocalPlayer.Data.Resources.CacaoBean.Value)})
-						elseif game.PlaceId == 4869039553 then
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WorldTeleportRemote"):InvokeServer(3475397644,{})
-							wait(9e9)
-						end
-					elseif tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value) < 10000 then
-						if game.PlaceId ~= 4869039553 then
-							game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WorldTeleportRemote"):InvokeServer(4869039553,{})
-							wait(9e9)
-						elseif game.PlaceId == 4869039553 then
-							if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude > 50 then
-								game:GetService("Players").LocalPlayer.Character.Humanoid.Sit = false
-								game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = getClosestFarm():FindFirstChildWhichIsA("BasePart").CFrame * CFrame.new(0, 10, 40)
-							elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude < 50 and  (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude > 15 then
-								game:GetService("Players").LocalPlayer.Character.Humanoid.Sit = false
-								game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new((getClosestFarm():FindFirstChildWhichIsA("BasePart").Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude/tonumber(5), Enum.EasingStyle.Linear),{CFrame = getClosestFarm():FindFirstChildWhichIsA("BasePart").CFrame}):Play()
-							elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude < 15 then
-								game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
-								game:GetService("VirtualInputManager"):SendKeyEvent(false, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
-							end
-						end
+			if (tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value) >= 10000) then
+				if (game.PlaceId == 3475397644) then
+					wait(1)
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellFarmMerchantRemote"):FireServer(10000)
+					wait(1)
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="Coconut",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value)})
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="Avacado",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Avacado.Value)})
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SellItemRemote"):FireServer({ItemName="CacaoBean",Amount=tonumber(game:GetService("Players").LocalPlayer.Data.Resources.CacaoBean.Value)})
+				elseif (game.PlaceId == 4869039553) then
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WorldTeleportRemote"):InvokeServer(3475397644, {})
+					wait(8999999488)
+				end
+			elseif (tonumber(game:GetService("Players").LocalPlayer.Data.Resources.Coconut.Value) < 10000) then
+				if (game.PlaceId ~= 4869039553) then
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WorldTeleportRemote"):InvokeServer(4869039553, {})
+					wait(8999999488)
+				elseif (game.PlaceId == 4869039553) then
+					if ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude > 50) then
+						game:GetService("Players").LocalPlayer.Character.Humanoid.Sit = false
+						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = getClosestFarm().WorldPivot * CFrame.new(0, 10, 40)
+					elseif (((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude < 50) and ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude > 15)) then
+						game:GetService("Players").LocalPlayer.Character.Humanoid.Sit = false
+						game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new((getClosestFarm().WorldPivot.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude / tonumber(3), Enum.EasingStyle.Linear), {CFrame=getClosestFarm():FindFirstChildWhichIsA("BasePart").CFrame}):Play()
+					elseif ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude < 15) then
+						game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
+						game:GetService("VirtualInputManager"):SendKeyEvent(false, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
 					end
-				end)
+				end
 			end
 		end
 	end)
-end)
-spawn(function()
-	pcall(function()
-		while wait(10) do
-            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm():FindFirstChildWhichIsA("BasePart").Position).magnitude > 15 or not getClosestFarm() then
-                Notification(1, "SmellLikehacker Hub", "reseted character", 1)
-                game.Players.localPalyer.Character.Humanoid.Health = 0
-            elseif getClosestFarm() then
-                Notification(1, "SmellLikehacker Hub", "non reset character", 1)
-            end
-		end
-	end)
-end)
-spawn(function()
-	pcall(function()
+	spawn(function()
 		while wait() do
-			if _G.AutoFarm == true then
-				pcall(function()
-					local BeenASecond, V3 = false, Vector3.new(0, 0, 0)
-					for _, v in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-						if v.IsA(v, "BasePart") then
-							v.Velocity, v.RotVelocity = V3, V3
-						end
-					end
-				end)
+			local BeenASecond, V3 = false, Vector3.new(0, 0, 0)
+			for _, v in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+				if v.IsA(v, "BasePart") then
+					v.Velocity, v.RotVelocity = V3, V3
+				end
 			end
 		end
 	end)
-end)
-spawn(function()
-	pcall(function()
+	spawn(function()
 		while wait() do
-			pcall(function()
-				if _G.AutoFarm == true then
-					for ii, vv in pairs(workspace.Camera:GetChildren()) do
-						if (vv.ClassName == "Model") then
-							for i, v in pairs(vv:GetChildren()) do
-								if ((v.ClassName == "Part") or (v.ClassName == "MeshPart")) then
-									v.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
-								end
-							end
+			for ii, vv in pairs(workspace.Camera:GetChildren()) do
+				if (vv.ClassName == "Model") then
+					for i, v in pairs(vv:GetChildren()) do
+						if ((v.ClassName == "Part") or (v.ClassName == "MeshPart")) then
+							v.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
 						end
 					end
 				end
-			end)
+			end
 		end
 	end)
-end)
 end
