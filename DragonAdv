@@ -70,7 +70,7 @@ if ((game.PlaceId == 3475397644) or (game.PlaceId == 4869039553)) then
 						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = getClosestFarm().WorldPivot * CFrame.new(0, 10, 40)
 					elseif (((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude < 50) and ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude > 15)) then
 						game:GetService("Players").LocalPlayer.Character.Humanoid.Sit = false
-						game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new((getClosestFarm().WorldPivot.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude / tonumber(3), Enum.EasingStyle.Linear), {CFrame=getClosestFarm():FindFirstChildWhichIsA("BasePart").CFrame}):Play()
+						game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new((getClosestFarm().WorldPivot.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude / tonumber(3), Enum.EasingStyle.Linear), {CFrame=getClosestFarm().WorldPivot}):Play()
 					elseif ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - getClosestFarm().WorldPivot.Position).magnitude < 15) then
 						game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
 						game:GetService("VirtualInputManager"):SendKeyEvent(false, "E", false, game.Players.LocalPlayer.Character.HumanoidRootPart)
