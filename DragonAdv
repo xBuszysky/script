@@ -1,5 +1,4 @@
-wait(30)
-repeat wait() until game:IsLoaded()
+repeat wait(30) until game:IsLoaded()
 if ((game.PlaceId == 3475397644) or (game.PlaceId == 4869039553)) then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/SmellLikeHacker/IDK/main/Notification"))()
 	wait()
