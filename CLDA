@@ -1,21 +1,16 @@
 print("The Hexation | Loading")
------------------------------- [ Variables ] ------------------------------
-repeat wait() until game:IsLoaded()
+
+repeat wait() until game:IsLoaded() 
+    and game.Players.LocalPlayer:GetAttribute("ClientInitiated") 
+    and game.Players.LocalPlayer:GetAttribute("InitialWrappers") 
+    and game.Players.LocalPlayer:GetAttribute("LoadedWrapper") 
+    and game.Players.LocalPlayer:GetAttribute("LoadedWrappers") 
+    and game.Players.LocalPlayer:GetAttribute("ServerLoadedInit")
 wait(2)
 print("The Hexation | Loaded")
-if game:IsLoaded() == true then
-    local g, w, l, t, decalsyeeted = game, game.Workspace, game.Lighting, game.Workspace.Terrain, true
-    t.WaterWaveSize, t.WaterWaveSpeed, t.WaterReflectance, t.WaterTransparency = 0, 0, 0, 0
-    l.GlobalShadows, l.FogEnd, l.Brightness = false, 9e9, 0
-    settings().Rendering.QualityLevel = "Level01"
-    for _,v in pairs(g:GetDescendants()) do if (v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart")) then v.Material, v.Reflectance = "Plastic", 0 
-    elseif (v:IsA("Decal") or v:IsA("Texture")) and decalsyeeted then v.Transparency = 1 elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Lifetime = NumberRange.new(0)
-    elseif v:IsA("Explosion") then v.BlastPressure, v.BlastRadius = 1, 1 elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then v.Enabled = false 
-    elseif v:IsA("MeshPart") then v.Material, v.Reflectance, v.TextureID = "Plastic", 0, 10385902758728957 end end
-    for _,e in pairs(l:GetChildren()) do if (e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect")) then e.Enabled = false end end
 
+if game:IsLoaded() then
     local Collection = {}
-
     local Debris = game:GetService("Debris")
     local TweenService = game:GetService("TweenService")
     local Tween_Info = TweenInfo.new(0.2, Enum.EasingStyle.Linear)
@@ -27,7 +22,38 @@ if game:IsLoaded() == true then
         end
         return Object
     end
-    
+
+    local ScreenGui = Collection:new("ScreenGui", {
+        Parent = game.CoreGui,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    })
+    local ImageLabel = Collection:new("ImageLabel", {
+        Parent = ScreenGui,
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 1.000,
+        ImageTransparency = 1.000,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0.2713781, 0, 0.278186262, 0),
+        Size = UDim2.new(0.456537098, 0, 0.443627447, 0),
+        Image = "rbxassetid://17321073105",
+    })
+    local UIAspectRatioConstraint = Collection:new("UIAspectRatioConstraint", {
+        Parent = ImageLabel,
+        AspectRatio = 1.785
+    })
+
+    local Popup = TweenService:Create(ImageLabel, Tween_Info, {ImageTransparency = 0})
+    Popup.Completed:Connect(function()
+        wait(2)
+        local FadeOut = TweenService:Create(ImageLabel, Tween_Info, {ImageTransparency = 1})
+        FadeOut.Completed:Connect(function()
+            ScreenGui:Destroy()
+        end)
+        FadeOut:Play()
+    end)
+    Popup:Play()
+    wait(1)
 
     local Debug = true
 
@@ -46,198 +72,159 @@ if game:IsLoaded() == true then
     local LocalPlayer = Players.LocalPlayer
     local PlayerName = LocalPlayer.Name
 
-    local Collection = {}
+    local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+    -- local selectedColor = { "Acorn", "Alligator", "Amarklor", "Amber", "Amethyst", "Apricot", "Aster", "Ash", "Auburn", "Bark", "Beach", "Beige", "Berry", "Birch", "Black", "Blackberry", "Blush", "Blue", "Bluebell", "Bluesteel", "Boulder", "Bubble", "Bubblegum", "Bronze", "Brown", "Brownie", "Cabbage", "Camo", "Carmine", "Caramel", "Carrot", "Caterpillar", "Chartreuse", "Charm", "Cherry", "Chestnut", "Cinnamon", "Clay", "Cloud", "Coffee", "Confetti", "Copper", "Coral", "Corrosion", "Cranberry", "Cream", "Crimson", "Cyan", "Dart", "Depth", "Denim", "Dolphin", "Dream", "Drip", "Dull", "Dullness", "Eggplant", "Emerald", "Essence", "Fire", "Felt", "Fern", "Felt", "Fuschia", "Gold", "Grape", "Grass", "Gum", "Ginger", "Gingerbread", "Glacier", "Glow", "Gold", "Grape", "Green", "Gravel", "Gum", "Haunted", "Haze", "Hazel", "History", "Honey", "Hydra", "Icecap", "Ivy", "Jade", "Jelly", "Jungle", "Kelp", "Lavender", "Leaf", "Lemon", "Lilac", "Loulou", "Mellow", "Malachite", "Marine", "Maple", "Mantis", "Magenta", "Mint", "Midnight", "Mist", "Moonrock", "Moss", "Mountain", "Murk", "Night", "Ocean", "Orange", "Peach", "Pear", "Pearl", "Pecan", "Petal", "Petalite", "Petal", "Plankton", "Plum", "Prehistoric", "Pumpkin", "Purple", "Poppy", "Rain", "Rainforest", "Rainbow", "Raindrop", "Raspberry", "Redwood", "Rose", "Ruby", "Saffron", "Sahara", "Sanddollar", "Sandstone", "Sapphire", "Seafoam", "Seaweed", "Silt", "Silver", "Slate", "Snake", "Snowflake", "Spearmint", "Spirit", "Squash", "Starfish", "Storm", "Strawberry", "Sunrise", "Synthesizer", "Taffy", "Teal", "Tomato", "Trench", "Turquoise", "Toxin", "Twilight", "Umber", "Uranium", "Uranus", "Urchin", "Vermillion", "Water", "Watermelon", "White", "Winter", "Yam", "Yolk" }
+    -- local selectedMaterial = Randomizer.SortedMaterials
+    
     Collection.__index = Collection
+
+    local cloneref = cloneref or function(object) return object end
+
+    local Randomizer = {
+        Services = setmetatable({}, {
+            __index = function(self, key)
+                local service = cloneref(game:GetService(key))
+
+                return service
+            end
+        }),
+
+        Colors = {},
+        ValidatedColors = {},
+        SortedColors = {}, -- for dropdown only
+
+        Material = {},
+        SortedMaterials = {}, -- for dropdown only
+        ValidatedMaterials = {
+            ['PrimaryMaterial'] = 'Mat1',
+            ['SecondaryMaterial'] = 'Mat2',
+            ['TertiaryMaterial'] = 'Mat3',
+        },
+
+        Utils = {},
+    }
+
+    local Players, ReplicatedStorage = Randomizer.Services.Players, Randomizer.Services.ReplicatedStorage
+
+    local LocalPlayer = Players.LocalPlayer
+
+    local PlayerDragons = LocalPlayer.Data.Dragons
+
+    Randomizer.Colors = require(ReplicatedStorage.Storage.Dragons.Colors)
+    Randomizer.Material = require(ReplicatedStorage.Storage.Dragons.Materials)
+
+    do
+        for i,v in next, Randomizer.Colors do
+            table.insert(Randomizer.SortedColors, v.Name)
+            Randomizer.ValidatedColors[v.Color] = v.Name
+        end
+
+        table.sort(Randomizer.SortedColors, function(a, b)
+            return a < b
+        end)
+
+        for i,v in next, Randomizer.Material do
+            table.insert(Randomizer.SortedMaterials, tostring(i))
+        end
+
+        table.sort(Randomizer.SortedMaterials, function(a, b)
+            return a < b
+        end)
+    end
+
+    function Randomizer.Utils:ToHex(r, g, b)
+        r = math.clamp(r, 0, 255)
+        g = math.clamp(g, 0, 255)
+        b = math.clamp(b, 0, 255)
+
+        local hexR = string.format("%02X", r)
+        local hexG = string.format("%02X", g)
+        local hexB = string.format("%02X", b)
+
+        return hexR .. hexG .. hexB
+    end
+
+    function Randomizer.Utils:CountTable(t)
+        local count = 0
+        for i,v in next, t do
+            count = count + 1
+        end
+        return count
+    end
+
+    function Randomizer.Utils:Roll(Dragon, InsertedPart, ColorName, RollType)
+        local DragonId = Dragon.Name
+        local Part = Dragon[RollType == 'Material' and Randomizer.ValidatedMaterials[InsertedPart] or InsertedPart]
+
+        if Part == nil then
+            warn("Part is nil")
+            return
+        end
+
+        local PartValue = Part.Value
+
+        if RollType == 'Material' then
+
+            if typeof(ColorName) == 'table' and ColorName[PartValue] or ColorName == PartValue then
+                warn('Material is the same')
+                return
+            end
+
+            local Potion = ('%s%s'):format(InsertedPart, "Potion")
+
+            ReplicatedStorage.Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonId), Potion)
+
+            warn('rolling material', PartValue , ColorName)
+            return;
+        end
+
+        local HexColor = Randomizer.Utils:ToHex(PartValue.R * 255, PartValue.G * 255, PartValue.B * 255)
+        local HexName = Randomizer.ValidatedColors[HexColor]
+
+        if HexName == nil then
+            warn("Invalid color")
+            return
+        end
+
+        if typeof(ColorName) == 'table' and ColorName[HexName] or ColorName == HexName then
+            warn('Color is the same')
+            return
+        end
+
+        warn('rolling color', HexName, ColorName)
+
+        local Potion = ('%s%s'):format(InsertedPart, "Potion")
+
+        ReplicatedStorage.Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonId), Potion)
+    end
+
+
+    -- local SelectedDragon = PlayerDragons["1"]
+
+    -- Randomizer.Utils:Roll(SelectedDragon, "Primary", "Beige", "Color")
+
+    -- roll material
+
+    -- local SelectedDragon = PlayerDragons["1"]
+
+    -- Randomizer.Utils:Roll(SelectedDragon, "PrimaryMaterial", "Metal", "Material")
 
     ------------------------------ [ Checking Variable ] ------------------------------
 
-    local roman_to_arabic = {
-        ["I"] = 1, ["V"] = 5, ["X"] = 10, ["L"] = 50, ["C"] = 100, ["D"] = 500, ["M"] = 1000
-    }
-    
-    function RomanToArabic(roman)
-        local total = 0
-        local previous = 0
-        
-        for i = #roman, 1, -1 do
-            local char = roman:sub(i, i)
-            local value = roman_to_arabic[char]
-            
-            if value < previous then
-                total = total - value
-            else
-                total = total + value
-            end
-            
-            previous = value
-        end
-        
-        return total
-    end
-    
-    local arabic_to_roman = {
-        {1000, "M"}, {900, "CM"}, {500, "D"}, {400, "CD"},
-        {100, "C"}, {90, "XC"}, {50, "L"}, {40, "XL"},
-        {10, "X"}, {9, "IX"}, {5, "V"}, {4, "IV"},
-        {1, "I"}
-    }
-    
-    function ArabicToRoman(arabic)
-        local roman = ""
-        
-        for _, pair in ipairs(arabic_to_roman) do
-            local value, symbol = pair[1], pair[2]
-            
-            while arabic >= value do
-                roman = roman .. symbol
-                arabic = arabic - value
-            end
-        end
-        
-        return roman
+    if Remotes:FindFirstChild("SellItemRemote") then
+        sellItemRemote = Remotes["SellItemRemote"]
     end
 
-    local DataManager = {}
-    function DataManager:Get()
-        return DataManager.Save.Get()
-    end
-    DataManager.Save = require(game:GetService("ReplicatedStorage").Library.Client.Save)
-    DataManager.Upgrades = require(game:GetService("ReplicatedStorage").Library.Directory.Upgrades)
+    ------------------------------ [ Keyboard Sending ] ------------------------------
 
-    local Network = game:GetService("ReplicatedStorage"):FindFirstChild("Network")
-
-    local PotionRecipes = require(game:GetService("ReplicatedStorage").Library.Directory.CraftingMachines)
-
-    function DataManager:GetEquippedPetsEUID()
-        local EUIDs = {}
-        local EquippedPets = DataManager:Get()['EquippedPets']
-
-        for i,v in next, EquippedPets do
-            table.insert(EUIDs, tostring(i))
-        end
-
-        return EUIDs
-    end
-
-    function DataManager:GetBreakables()
-        for i,v in next, workspace.__THINGS.Breakables:GetChildren() do
-            if v:IsA('Model') then
-                return v
-            end
-        end
-
-        return nil
-    end
-
-    function DataManager:SetTarget(UUID)
-        local EquippedEUIDs = DataManager:GetEquippedPetsEUID() -- > 3824, 3124, 5234
-
-        for i,v in next, EquippedEUIDs do
-            Network.Breakables_JoinPetBulk:FireServer({[v] = tonumber(UUID)})
-        end
-    end
-
-    function DataManager:Click(Model)
-        if Model and Model:FindFirstChildOfClass('MeshPart') and Model:FindFirstChildOfClass('MeshPart'):FindFirstChild('Hitbox') and Model:FindFirstChildOfClass('MeshPart'):FindFirstChild('Hitbox'):FindFirstChildOfClass('ClickDetector') then
-            fireclickdetector(Model:FindFirstChildOfClass('MeshPart'):FindFirstChild('Hitbox'):FindFirstChildOfClass('ClickDetector'))
-        end
-    end
-
-    DataManager.JoinCooldown = 0
-
-    function DataManager:Break()
-        local Breakables = DataManager:GetBreakables()
-
-        if Breakables then
-            DataManager:SetTarget(Breakables.Name)
-            DataManager:Click(Breakables)
-        end
-    end
-
-    function DataManager:GetUpgrades()
-        local Upgrades = DataManager:Get()['EquippedPets']
-    end
-    
-    function DataManager:PurchaseUpgrades()
-        for key, value in pairs(DataManager.Upgrades) do
-            game:GetService("ReplicatedStorage").Network.Upgrades_Purchase:InvokeServer(tostring(key))
-        end
-    end
-
-    function DataManager:GetFruitID()
-        local FruitIDs = {}
-        local Fruit = DataManager:Get()["Inventory"]["Fruit"]
-        for i,v in next, Fruit do
-            table.insert(FruitIDs, tostring(i))
-        end
-        return FruitIDs
-    end
-
-    function DataManager:UseFruits()
-        local FruitIDs = DataManager:GetFruitID()
-        
-        for i, v in next, FruitIDs do
-            Network["Fruits: Consume"]:InvokeServer(tostring(v), 1)
-        end
-    end
-
-    function DataManager:GetConsumable()
-        local Consumables = DataManager:Get()["Inventory"]["Consumable"]
-        local ConsumableIDs = {}
-        for i,v in next, Consumables do
-            table.insert(ConsumableIDs, v)
-        end
-        return ConsumableIDs
-    end
-
-    function DataManager:GetConsumableIDs()
-        local Consumables = DataManager:Get()["Inventory"]["Consumable"]
-        local ConsumableIDs = {}
-        for i,v in next, Consumables do
-            table.insert(ConsumableIDs, i)
-        end
-        return ConsumableIDs
-    end
-
-    function DataManager:GetPotionRecipeIndex(id, tn)
-        -- for i, v in pairs(require(game:GetService("ReplicatedStorage").Library.Directory.CraftingMachines)) do
-        --     if v["PotionCraftingMachine"] then
-        --         for ii, recipe in pairs(v["Recipes"]) do
-        --             local result = recipe["Result"]["_data"]
-        --             if result["id"] == id and result["tn"] == tn then
-        --                 return tostring(recipe["RecipeIndex"])
-        --             end
-        --         end
-        --     end
-        -- end
-
-        local PotionCraftingMachine = require(game:GetService("ReplicatedStorage").Library.Directory.CraftingMachines).PotionCraftingMachine
-
-        for i,v in next, PotionCraftingMachine.Recipes do
-            local ResultData = v['Result']['_data']
-
-            if ResultData and ResultData['id'] == id and ResultData['tn'] == tn then
-                return tonumber(v['RecipeIndex'])
-            end
-        end
-
-        return nil
-    end
-    
-    Network.Inventory_Opened:FireServer()
-
-    ------------------------------ [ UI Library ] ------------------------------
-
-    function Collection:Keyboard(Key,Holding)
+    function Collection:Keyboard(Key, Holding)
         spawn(function()
             xpcall(function()
-                if Holding == nil then
-                    Holding = 0 
-                end
-                VirtualInputManager:SendKeyEvent(true,Key,false,LocalPlayer.Character.HumanoidRootPart)
+                if Holding == nil then Holding = 0 end
+                VirtualInputManager:SendKeyEvent(true, Key, false, LocalPlayer.Character.HumanoidRootPart)
                 wait(Holding)
-                VirtualInputManager:SendKeyEvent(false,Key,false,LocalPlayer.Character.HumanoidRootPart) 
-            end,warn)
+                VirtualInputManager:SendKeyEvent(false, Key, false, LocalPlayer.Character.HumanoidRootPart) 
+            end, warn)
         end)
     end
 
@@ -260,26 +247,548 @@ if game:IsLoaded() == true then
         GuiService.SelectedObject = nil;
     end;
 
-    local VirtualInputManager = game:GetService("VirtualInputManager")
+    ------------------------------ [ My Dragon Menu Setup ] ------------------------------
 
-    function simulateClick(button)
-        if typeof(button) == "Instance" and (button:IsA("TextButton") or button:IsA("Frame") or button:IsA("ImageButton")) then
-            local buttonPosition = button.AbsolutePosition + button.AbsoluteSize / 2
-            VirtualInputManager:SendMouseButtonEvent(buttonPosition.X, buttonPosition.Y + 40, 0, true, button, 0) 
-            VirtualInputManager:SendMouseButtonEvent(buttonPosition.X, buttonPosition.Y + 40, 0, false, button, 0) 
-        else
-            warn("The target is not a valid button instance.")
+    spawn(function()
+        repeat task.wait() until LocalPlayer.PlayerGui.HUDGui.MenuFrame.SideFrame.MainFrame.MyDragonsButton.Visible == true or LocalPlayer.PlayerGui.HUDGui.MenuFrame.MobileSideFrame.MyDragonsButton.Visible == true
+        if LocalPlayer.PlayerGui.HUDGui.MenuFrame.SideFrame.MainFrame.MyDragonsButton.Visible == true or LocalPlayer.PlayerGui.HUDGui.MenuFrame.MobileSideFrame.MyDragonsButton.Visible == true then
+            Collection:FireButton(LocalPlayer.PlayerGui.HUDGui.MenuFrame.SideFrame.MainFrame.MyDragonsButton)
+            Collection:FireButton(LocalPlayer.PlayerGui.HUDGui.MenuFrame.MobileSideFrame.MyDragonsButton)
+            task.wait()
+            Collection:FireButton(LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.CloseButton.UpperLabel)
+        end
+    end)
+
+    ------------------------------ [ UI Library ] ------------------------------
+
+    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+    local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+    local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+    local Window = Fluent:CreateWindow({
+        Title = "The Hexation | xBusySky Color Edition",
+        SubTitle = "By Starsation (ft. Androssy)",
+        TabWidth = 160,
+        Size = UDim2.fromOffset(580, 460),
+        Acrylic = true,
+        Theme = "Dark",
+        MinimizeKey = Enum.KeyCode.LeftAlt
+    })
+
+    local Tabs = {
+        DColor = Window:AddTab({ Title = "Riding Dragon Color", Icon = "palette" }),
+        MDColor = Window:AddTab({ Title = "Menu Dragon Color", Icon = "palette" }),
+        ShopSniper = Window:AddTab({ Title = "Shop Sniper", Icon = "shopping-bag" }),
+        Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    }
+
+    local Options = Fluent.Options
+
+    ------------------------------ [ Tabs: Dragon Color ] ------------------------------
+
+    local PlayerFolder = Workspace.Characters:WaitForChild(LocalPlayer.Name)
+    local PlayeyDragonFolder = PlayerFolder:WaitForChild("Dragons")
+    local WorkspaceGui = LocalPlayer.PlayerGui:WaitForChild("WorkspaceGui")
+
+    function Collection:getDragon()
+        local Dragon, DragonName, DragonEquipped = nil, nil, nil
+        for i, v in next, WorkspaceGui:GetChildren() do
+            if v.Name:find('Display') and v.Name:find('Dragon') and v.Name:find(LocalPlayer.Name) then
+                DragonEquipped = v
+                break
+            end
+        end
+
+        if DragonEquipped then
+            DragonName = tostring(DragonEquipped.ContainerFrame.NameLabel.Text)
+            Dragon = tostring(DragonEquipped.Name):split("Dragon")[2]:split("_")[1]
+        end
+
+        if DragonEquipped and PlayeyDragonFolder:FindFirstChild(Dragon) then
+            Dragon = PlayeyDragonFolder:FindFirstChild(Dragon)
+        end
+
+        return Dragon, DragonName
+    end
+
+    Tabs.DColor:AddSection("[\xf0\x9f\x8e\xa8] Riding Dragon Color Information")
+
+    Tabs.DColor:AddParagraph({
+        Title = "Notices",
+        Content = "Please equip ONLY 1 Dragon to change the color"
+    })
+
+    local DragonLabel = Tabs.DColor:AddParagraph({
+        Title = "Equipped Dragon Info",
+        Content = "Loading"
+    })
+
+    spawn(function()
+        while wait(1) do
+            if Fluent.Unloaded then break end
+            pcall(function()
+                local Dragon, DragonName = Collection:getDragon()
+                if Dragon then
+                    DragonLabel:SetDesc("Name : " .. DragonName)
+                else
+                    DragonLabel:SetDesc("No Dragon Equipped")
+                end
+            end)
+        end
+    end)
+
+    function Collection:Color3ToRGB(Color3)
+        return math.floor(Color3.R * 255), math.floor(Color3.G * 255), math.floor(Color3.B * 255)
+    end
+
+    local DragonPot = Tabs.DColor:AddDropdown("Dragon_Dropdown", {
+        Title = "Select Potion",
+        Values = {},
+        Multi = false,
+        Default = "PrimaryPotion",
+    })
+
+    delay(3, function()
+        local PotionList = {}
+        for i, v in pairs(LocalPlayer.Data.Resources:GetChildren()) do
+            if v.Value >= 1 and v.Name:match("Potion") then
+                table.insert(PotionList, tostring(v.Name) .. " (" .. v.Value .. ")")
+            end
+        end
+        DragonPot:SetValues(PotionList)
+    end)
+
+    if _G.DaikiConnection then
+        for i, v in pairs(_G.DaikiConnection) do
+            v:Disconnect()
+        end 
+    end
+
+    _G.DaikiConnection = {}
+    for i, v in pairs(LocalPlayer.Data.Resources:GetChildren()) do
+        if v.Name:match("Potion") then
+            _G.DaikiConnection[#_G.DaikiConnection + 1] = v.Changed:Connect(function()
+                local PotionList = {}
+                local Nigga_56 = {}
+                for i, v in pairs(LocalPlayer.Data.Resources:GetChildren()) do
+                    if v.Value >= 1 and v.Name:match("Potion") then
+                        table.insert(PotionList, tostring(v.Name) .. " (" .. v.Value .. ")")
+                        Nigga_56[tostring(v.Name)] = v.Value
+                    end
+                end
+
+                DragonPot:SetValues(PotionList)
+                DragonPot:SetValue(Options.Dragon_Dropdown.Value:split(" (")[1] .. " (" .. Nigga_56[Options.Dragon_Dropdown.Value:split(" (")[1]] .. ")")
+                print('Options.Dragon_Dropdown.Value:split(" (")', Options.Dragon_Dropdown.Value:split(" (")[1] .. " (" .. Nigga_56[Options.Dragon_Dropdown.Value:split(" (")[1]] .. ")")
+            end)
         end
     end
+
+    Tabs.DColor:AddButton({
+        Title = "Use Potion",
+        Description = "Press to use the selected potion on your Dragon",
+        Callback = function()
+            Window:Dialog({
+                Title = "Reroll Color",
+                Content = "Do you want to use " .. Options.Dragon_Dropdown.Value .. " on your Dragon?",
+                Buttons = {
+                    {
+                        Title = "\xf0\x9f\x9f\xa9",
+                        Callback = function()
+                            local Dragon = Collection:getDragon()
+                            if Dragon then
+                                local potionName = Options.Dragon_Dropdown.Value:match("^(%S+)")
+                                game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(Dragon), potionName)
+                            else
+                                Fluent:Notify({
+                                    Title = "[\xE2\x9D\x8C] Error",
+                                    Content = "You need to equip a Dragon first",
+                                    Duration = 3
+                                })
+                            end
+                        end
+                    },
+                    {
+                        Title = "\xf0\x9f\x9f\xa5",
+                        Callback = function() end
+                    }
+                }
+            })
+        end
+    })
+
+    local Primary_C = Tabs.DColor:AddColorpicker("Primary_Color", {
+        Title = "[1] Primary Color",
+        Description = "",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    local Secondary_C = Tabs.DColor:AddColorpicker("Secondary_Color", {
+        Title = "[2] Secondary Color",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    local Tertiary_C = Tabs.DColor:AddColorpicker("Tertiary_Color", {
+        Title = "[3] Tertiary Color",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    ------------------------------ [ Task : Dragon Material -> Fluent UI (DColor) ] ------------------------------
+
+    spawn(function()
+        while wait(1) do
+            if Fluent.Unloaded then break end
+            local Dragon = Collection:getDragon()
+            if Dragon then
+                Primary_C:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.Data.Dragons[tostring(Dragon)].Primary.Value)))
+                Primary_C:SetDesc("Material : " .. LocalPlayer.Data.Dragons[tostring(Dragon)].Mat1.Value)
+                Secondary_C:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.Data.Dragons[tostring(Dragon)].Secondary.Value)))
+                Secondary_C:SetDesc("Material : " .. LocalPlayer.Data.Dragons[tostring(Dragon)].Mat2.Value)
+                Tertiary_C:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.Data.Dragons[tostring(Dragon)].Tertiary.Value)))
+                Tertiary_C:SetDesc("Material : " .. LocalPlayer.Data.Dragons[tostring(Dragon)].Mat3.Value)
+            end
+        end
+    end)
+
+        ------------------------------ [ Tabs : Menu Dragon Color ] ------------------------------
+
+    Tabs.MDColor:AddSection("[\xf0\x9f\x8e\xa8] Dragon Color Automation")
+
+        ------------------------------ [ Func : Dragon Color In UI (Drop Down) ] ------------------------------
+
+
+    -- local myDragonInMenu = Tabs.MDColor:AddDropdown("myDragonInMenu", {
+    --     Title = "Select Dragon",
+    --     Values = {},
+    --     Multi = false,
+    --     Default = "Select Your Dragon",
+    -- })
+
+    -- local function updateDragonDropdown()
+    --     local dragonDropdownValues = {}
         
-    simulateClick(LocalPlayer.PlayerGui.Main.Bottom.Buttons.Pets)
-    
+    --     local dragonsFrame = game.Players.LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.Dragons.DragonsFrame
+    --     if not dragonsFrame then
+    --         print("DragonsFrame not found!")
+    --         return
+    --     end
+        
+    --     for _, child in pairs(dragonsFrame:GetChildren()) do
+    --         if child:IsA("ImageButton") and child.Name ~= "Default" and child:FindFirstChild("NameLabel") then
+    --             local NameLabel = child.NameLabel
+    --             if NameLabel and NameLabel.Text then
+    --                 table.insert(dragonDropdownValues, NameLabel.Text)
+    --             end
+    --         end
+    --     end
+        
+    --     myDragonInMenu:SetValues(dragonDropdownValues)
+    --     --print("Dropdown values updated: ", table.concat(dragonDropdownValues, ", "))
+    -- end
 
-    task.wait(0.1)
-    LocalPlayer.PlayerGui.Main.Enabled = true
-    
+    -- updateDragonDropdown()
 
-    -- firesignal(game:GetService("Players").LocalPlayer.PlayerGui.Main.Bottom.Buttons.Pets.ImageLabel)
+    -- spawn(function()
+    --     while wait(5) do
+    --         if Fluent.Unloaded then break end
+    --         pcall(function()
+    --             updateDragonDropdown()
+    --         end)
+    --     end
+    -- end)
+
+    -- myDragonInMenu:OnChanged(function(value)
+    --     pcall(function()
+    --         Options.myDragonInMenu.Value = value
+    --         task.wait(.1)
+    --         print("Step 0: Dropdown changed to " .. value)
+            
+    --         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.HUDGui.MenuFrame.MobileSideFrame.MyDragonsButton["MouseButton1Click"])
+    --         print("Step 1: Clicked MyDragonsButton")
+
+    --         task.wait(1)
+            
+    --         local dragonGui = LocalPlayer.PlayerGui:WaitForChild("MyDragonsGui")
+    --         local containerFrame = dragonGui:WaitForChild("ContainerFrame")
+    --         local contentFrame = containerFrame:WaitForChild("Content")
+    --         local dragonsFrame = contentFrame:WaitForChild("Dragons"):WaitForChild("DragonsFrame")
+
+    --         print("Step 2: Accessed DragonsFrame")
+
+    --         for i, v in pairs(dragonsFrame:GetChildren()) do
+    --             print("Step 3: Checking child element - " .. v.Name)
+    --             if v:IsA("ImageButton") and v.Name ~= "Default" and v:FindFirstChild("NameLabel") then
+    --                 print("Step 4: Found ImageButton and NameLabel")
+    --                 local NameLabel = v.NameLabel
+    --                 if NameLabel and NameLabel.Text then
+    --                     print("Step 5: Found NameLabel with text - " .. NameLabel.Text)
+    --                     if NameLabel.Text == Options.myDragonInMenu.Value then
+    --                         print("Step 6: Name matches, firing signal")
+    --                         Collection:Keyboard(MinimizeKey, 0.5)
+    --                         Collection:ClickGuiButtonNew(v)
+    --                         Collection:Keyboard(MinimizeKey, 0.5)
+    --                         print("Step 7: Fired MouseButton1Click for " .. v.Name)
+    --                     end
+    --                 else
+    --                     print("Step 5: NameLabel or NameLabel.Text is nil")
+    --                 end
+    --             else
+    --                 print("Step 4: Element is not a valid ImageButton with NameLabel")
+    --             end
+    --         end
+    --     end)
+    -- end)
+
+    ------------------------------ [ End Func : Dragon Color In UI (Drop Down) ] ------------------------------
+
+    Tabs.MDColor:AddParagraph({
+        Title = "Notices",
+        Content = "Select a Dragon in My Dragon menu"
+    })
+
+    local DInfo = Tabs.MDColor:AddParagraph({
+        Title = "Selected Dragon's Info",
+        Content = ""
+    })
+
+    spawn(function()
+        while wait(1) do
+            if Fluent.Unloaded then break end
+            DInfo:SetDesc("Selected Dragon Name : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.DragonName.NameLabel.UpperLabel.Text)
+        end
+    end)
+
+    local MD_Primary = Tabs.MDColor:AddColorpicker("MD_Primary_Color", {
+        Title = "[1] Primary",
+        Description = "",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    local MD_Secondary = Tabs.MDColor:AddColorpicker("MD_Secondary_Color", {
+        Title = "[2] Secondary",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    local MD_Tertiary = Tabs.MDColor:AddColorpicker("MD_Tertiary_Color", {
+        Title = "[3] Tertiary",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    spawn(function()
+        while wait(1) do
+            if Fluent.Unloaded then break end
+            MD_Primary:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Primary.Color.BackgroundColor3)))
+            MD_Primary:SetDesc("Color : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Primary.Color.TextLabel.Text .. "\nMaterial : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Primary.Material.TextLabel.Text)
+            MD_Secondary:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Secondary.Color.BackgroundColor3)))
+            MD_Secondary:SetDesc("Color : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Secondary.Color.TextLabel.Text .. "\nMaterial : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Secondary.Material.TextLabel.Text)
+            MD_Tertiary:SetValueRGB(Color3.fromRGB(Collection:Color3ToRGB(LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Tertiary.Color.BackgroundColor3)))
+            MD_Tertiary:SetDesc("Color : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Tertiary.Color.TextLabel.Text .. "\nMaterial : " .. LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Tertiary.Material.TextLabel.Text)
+        end
+    end)
+
+    if not Tabs or not Tabs.MDColor or not Tabs.MDColor.AddDropdown then
+        error("Tabs.MDColor or AddDropdown method does not exist.")
+    end
+
+    local PrimaryColorS = Tabs.MDColor:AddDropdown("PrimaryColorS", {
+        Title = "Select Primary Color To Roll",
+        Values = Randomizer.SortedColors,
+        Multi = true,
+        Default = {nil},
+    })
+
+    local PrimaryMaterialS = Tabs.MDColor:AddDropdown("PrimaryMaterialS", {
+        Title = "Select Primary Material To Roll",
+        Values = Randomizer.SortedMaterials,
+        Multi = true,
+        Default = {nil},
+    })
+    
+    local SecondaryColorS = Tabs.MDColor:AddDropdown("SecondaryColorS", {
+        Title = "Select Secondary Color To Roll",
+        Values = Randomizer.SortedColors,
+        Multi = true,
+        Default = {nil},
+    })
+
+    local SecondaryMaterialS = Tabs.MDColor:AddDropdown("SecondaryMaterialS", {
+        Title = "Select Secondary Material To Roll",
+        Values = Randomizer.SortedMaterials,
+        Multi = true,
+        Default = {nil},
+    })
+    local TertiaryColorS = Tabs.MDColor:AddDropdown("TertiaryColorS", {
+        Title = "Select Tertiary Color To Roll",
+        Values = Randomizer.SortedColors,
+        Multi = true,
+        Default = {nil},
+    })
+
+    local TertiaryMaterialS = Tabs.MDColor:AddDropdown("TertiaryMaterialS", {
+        Title = "Select Tertiary Material To Roll",
+        Values = Randomizer.SortedMaterials,
+        Multi = true,
+        Default = {nil},
+    })
+
+    -- myDragonSection:OnChanged(function(Value)
+    --     local Values = {}
+    --     for Value, State in next, Value do
+    --         table.insert(Values, Value)
+    --     end
+    -- end)
+
+    PrimaryColorS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    PrimaryMaterialS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    SecondaryColorS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    SecondaryMaterialS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    TertiaryColorS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    TertiaryMaterialS:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    Tabs.MDColor:AddSection("[\xe2\x9a\x99\xef\xb8\x8f] Auto Roll Settings")
+
+    Tabs.MDColor:AddToggle("AutoRoll", {Title = "Auto Roll Color", Description = "Use potions until it matches your selected color/material", Default = false })
+    Tabs.MDColor:AddDropdown("RollPotion", {
+        Title = "Select Potion",
+        Values = {"Normal Potions", "Shuffle Potions"},
+        Multi = false,
+        Default = "Normal Potions",
+    })
+    ------------------------------ [ Tabs: Shop-Sniper ] ------------------------------
+
+    Tabs.ShopSniper:AddSection("[\xf0\x9f\x9b\x92\xf0\x9f\x9b\x8d] Shop Sniper")
+
+    Tabs.ShopSniper:AddButton({
+        Title = "Open General Shop GUI",
+        Description = "",
+        Callback = function()
+            LocalPlayer.PlayerGui.GeneralStoreGui.ContainerFrame.Visible = true
+            LocalPlayer.PlayerGui.GeneralStoreGui.ContainerFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+        end
+    })
+
+    local ShopPotion = Tabs.ShopSniper:AddDropdown("ShopPotion", {
+        Title = "Select Potion",
+        Values = {"PrimaryPotion", "SecondaryPotion", "TertiaryPotion", "PrimaryMaterialPotion", "SecondaryMaterialPotion", "TertiaryMaterialPotion", "GenderPotion", "MutationPotion"},
+        Multi = true,
+        Default = {nil},
+    })
+
+    ShopPotion:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+    end)
+
+    Tabs.ShopSniper:AddToggle("AutoBuy", {Title = "Auto Buy Potions", Description = "Auto buy your selected potion every 10 sec", Default = false })
+    local SnipeAmount = Tabs.ShopSniper:AddInput("SnipeAmount", {
+        Title = "Input Amount",
+        Default = "1",
+        Placeholder = "Amount (Number Only)",
+        Numeric = true,
+    })
+    ------------------------------ [ Configurations ] ------------------------------
+
+    SaveManager:SetLibrary(Fluent)
+    InterfaceManager:SetLibrary(Fluent)
+    SaveManager:IgnoreThemeSettings()
+    SaveManager:SetIgnoreIndexes({})
+    InterfaceManager:SetFolder("The-Hexation")
+    SaveManager:SetFolder("The-Hexation/Dragon-Adventure-Color")
+
+    InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+    SaveManager:BuildConfigSection(Tabs.Settings)
+
+    Window:SelectTab(1)
+    Fluent:Notify({
+        Title = "The Hexation \xF0\x9F\x9F\xA1 | Color Edition",
+        Content = "The Hexation loaded!",
+        Duration = 5
+    })
+    SaveManager:LoadAutoloadConfig()
+
+    ------------------------------ [ Function Variables ] ------------------------------
+
+    function Collection:Comma(number)
+        local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+        int = int:reverse():gsub("(%d%d%d)", "%1,")
+        return minus .. int:reverse():gsub("^,", "") .. fraction
+    end
+
+    function Collection:FindOwnedDragon()
+        local Dragons
+        local Character = LocalPlayer.Character
+        if Character then
+            Dragons = Character:FindFirstChild("Dragons")
+            if Dragons then
+                for _, v in pairs(Dragons:GetChildren()) do
+                    if v.ClassName == "Model" and v:FindFirstChild("ID") and v:FindFirstChild("Seat") then
+                        if v.Seat:FindFirstChild("SeatWeld") then
+                            return v
+                        end
+                    end
+                end
+            end
+        end
+        return nil
+    end
+
+    function Collection:SendKey(key)
+        VirtualInputManager:SendKeyEvent(true, key, false, nil)
+        task.wait(0.005)
+        VirtualInputManager:SendKeyEvent(false, key, false, nil)
+    end
+
+    function Collection:FindSelectedDragonID()
+        local SelectedDragonID = nil
+        local Dragons = LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.Dragons.DragonsFrame
+        for _, Dragon in pairs(Dragons:GetChildren()) do
+            if Dragon:IsA("ImageButton") and Dragon.Name ~= "Default" then
+                if Dragon.NameLabel.Text == LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.DragonName.NameLabel.UpperLabel.Text then
+                    SelectedDragonID = Dragon.Name
+                    break
+                end
+            end
+        end
+        return SelectedDragonID
+    end
+
 
     ------------------------------ [ Workspace ] ------------------------------
 
@@ -288,688 +797,182 @@ if game:IsLoaded() == true then
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new())
     end)
-    
-    game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false) -- Disable leaderboard
-    game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false) -- Disable Chat
 
     local player = game.Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
-
-    Network.Eggs_Roll:InvokeServer()
-    task.wait(0.3)
+    
     local function createButton()
-        local screenGui = playerGui:FindFirstChild('DaikiScreenGui') or Instance.new("ScreenGui")
-        screenGui.Name = "DaikiScreenGui"
+        local screenGui = Instance.new("ScreenGui")
         screenGui.Parent = playerGui
-        screenGui.IgnoreGuiInset = true
-        screenGui.ResetOnSpawn = false
     
-        local ktbg = Instance.new("ImageLabel")
-    
-        ktbg.Parent = screenGui
-        ktbg.Size = UDim2.new(1, 0, 1, 0)
-        ktbg.Position = UDim2.new(0.5, 0, 0.5, 0)
-        ktbg.AnchorPoint = Vector2.new(0.5, 0.5)
-        ktbg.Image = "rbxassetid://94083352778363"
-        ktbg.BackgroundTransparency = 1
-    
-        local usernameui = Instance.new("TextLabel")
-
         local imageButton = Instance.new("ImageButton")
         imageButton.Parent = screenGui
     
-        imageButton.Size = UDim2.new(0, 50, 0, 50)
-        imageButton.Position = UDim2.new(0.2, 0, 0.2, 0)
-        imageButton.AnchorPoint = Vector2.new(0.4, 0.5)
-        imageButton.Image = "rbxassetid://83401054908706"
+        imageButton.Size = UDim2.new(0, 50, 0, 30)
+        imageButton.Position = UDim2.new(0.5, -15, 0, 15)
+        imageButton.AnchorPoint = Vector2.new(0.5, 0)
+        imageButton.Image = "rbxassetid://17321073105"
         imageButton.BackgroundTransparency = 1
     
         imageButton.MouseButton1Click:Connect(function()
-            if ktbg.Visible == true then ktbg.Visible = false else ktbg.Visible = true end; if ktbg.Visible == true then game:GetService("RunService"):Set3dRenderingEnabled(false) else game:GetService("RunService"):Set3dRenderingEnabled(true) end
+            Collection:Keyboard(Enum.KeyCode.LeftControl, 0)
         end)
-    
-        if player.PlayerGui.Main.Top:FindFirstChild('Coins') then
-            local Coin = player.PlayerGui.Main.Top:FindFirstChild('Coins'):Clone()
-            Coin.Parent = ktbg
-
-            Coin.Position = UDim2.new(0.265, 0, 0.78, 0)
-            Coin.AnchorPoint = Vector2.new(0.5, 0.5)
-            Coin.Size = UDim2.new(0, 0, 0.1, 0)
-        
-            local originalCoin = player.PlayerGui.Main.Top.Coins
-            local clonedIconMult = Coin.Icon.Mult
-            local clonedAmount = Coin.Amount
-
-            originalCoin.Icon.Mult:GetPropertyChangedSignal("Text"):Connect(function()
-                clonedIconMult.Text = originalCoin.Icon.Mult.Text
-            end)
-
-            originalCoin.Amount:GetPropertyChangedSignal("Text"):Connect(function()
-                clonedAmount.Text = originalCoin.Amount.Text
-            end)
-
-            local bestroll = LocalPlayer.PlayerGui.DaikiScreenGui.ImageLabel.Coins.Amount:Clone()
-            bestroll.Parent = ktbg
-            bestroll.Size = UDim2.new(0, 0, 0.1, 0)
-            bestroll.Position = UDim2.new(0.75, 0, 0.78, 0)
-            bestroll.AnchorPoint = Vector2.new(0.5, 0.5)
-            
-            player.leaderstats["\240\159\142\178 Rolls"].Changed:Connect(function(newValue)
-                bestroll.Text = tostring(newValue)
-            end)
-
-            local dicecopy = LocalPlayer.PlayerGui.Main.Bottom.Buttons.Roll:Clone()
-            dicecopy.Parent = ktbg
-            dicecopy.Size = UDim2.new(0.15, 0, 0.15, 0)
-            dicecopy.Position = UDim2.new(0.75, 0, 0.78, 0)
-            dicecopy.AnchorPoint = Vector2.new(0.5, 0.5)
-
-            local equippedPetsUI = LocalPlayer.PlayerGui.Inventory.Frame.Main.Pages.Pets.Equipped
-            local petcopy = equippedPetsUI:Clone()
-            
-            petcopy.Parent = ktbg
-            petcopy.Size = UDim2.new(0.8, 0, 0.3, 0)
-            petcopy.Position = UDim2.new(0.5, 0, 0.5, 0)
-            petcopy.AnchorPoint = Vector2.new(0.5, 0.5)
-            
-
-            spawn(function()
-                while task.wait() do
-                    for _, child in ipairs(equippedPetsUI:GetChildren()) do
-                        if child:IsA("ImageLabel") or child:IsA("ImageButton") then
-                            local iconClone = child:Clone()
-                            iconClone.Parent = petcopy
-                        end
-                    end
-                end
-            end)
-
-            local function syncPropertyChanges(source, target)
-                if source:IsA("ImageLabel") or source:IsA("ImageButton") then
-                    source:GetPropertyChangedSignal("Image"):Connect(function()
-                        target.Image = source.Image
-                    end)
-                end
-                
-                if source:IsA("TextLabel") or source:IsA("TextButton") then
-                    source:GetPropertyChangedSignal("Text"):Connect(function()
-                        target.Text = source.Text
-                    end)
-                end
-            end
-            
-            local function recursiveSync(source, target)
-                for _, sourceChild in ipairs(source:GetChildren()) do
-                    local targetChild = target:FindFirstChild(sourceChild.Name)
-                    if targetChild then
-                        syncPropertyChanges(sourceChild, targetChild)
-                        
-                        if sourceChild:IsA("Frame") then
-                            recursiveSync(sourceChild, targetChild)
-                        end
-            
-                        if sourceChild:IsA("UIAspectRatioConstraint") then
-                            targetChild.AspectRatio = sourceChild.AspectRatio
-                        elseif sourceChild:IsA("UIConstraint") then
-                            for property, value in pairs(sourceChild:GetAttributes()) do
-                                targetChild:SetAttribute(property, value)
-                            end
-                        end
-                    end
-                end
-            end
-            
-            recursiveSync(LocalPlayer.PlayerGui.Main.Bottom.Buttons.Roll, dicecopy)
-            
-            spawn(function()
-                while task.wait() do
-                    recursiveSync(LocalPlayer.PlayerGui.Main.Bottom.Buttons.Roll, dicecopy)
-                end
-            end)
-        end
-        
         spawn(function()
             while task.wait() do
-                screenGui.DisplayOrder = 969
+                if Fluent.Unloaded then imageButton:Destroy() end
             end
         end)
-
         return screenGui
     end
     
     local initialGui = createButton()
-
-    spawn(function()
-        while task.wait() do
-            Network.Eggs_Roll:InvokeServer() -- Roll
-            DataManager:Break() -- Breakables
-        end
-    end)
-
-    spawn(function()
-        while task.wait() do
-            DataManager:PurchaseUpgrades() -- Purchase Upgrades
-        end
-    end)
-
-    spawn(function()
-        while task.wait() do
-            local args = {}
-            
-            for i, orb in ipairs(game:GetService("Workspace").__THINGS.Orbs:GetChildren()) do
-                table.insert(args, tonumber(orb.Name))
-            end
-            Network["Orbs: Collect"]:FireServer(args) -- Collect Orbs (Coins | Bags | Drops)
-        end
-    end)
-
-    spawn(function()
-        while task.wait() do
-            Network.VendingMachines_Purchase:InvokeServer("PotionVendingMachine") -- VendingMachine
-        end
-    end)
-
-    spawn(function()
-        while task.wait(60) do
-            DataManager:UseFruits() -- Use Fruits
-        end
-    end)
-
-    -- spawn(function()
-    --     while task.wait() do
-    --         for i = 0, 50 do
-    --             game:GetService("ReplicatedStorage").Network.Relics_Request:InvokeServer(i)
-    --             game:GetService("ReplicatedStorage").Network.Relic_Found:InvokeServer(i)
-    --         end
-    --     end
-    -- end)
     
-    spawn(function()
-        while task.wait() do
-            for i = 1, 6 do
-                local args = {[1] = "StandardMerchant",[2] = i}
-                Network.CustomMerchants_Purchase:InvokeServer(unpack(args)) -- Purchase from Merchant
-            end
+    player.CharacterAdded:Connect(function()
+        if initialGui then
+            initialGui:Destroy()
         end
+        initialGui = createButton()
     end)
 
+    ------------------------------ [ Task : AutoRoll ] ------------------------------
 
-    -- Craft Faster Rolling --
     spawn(function()
-        while task.wait(1) do
-            for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-                if not v['id'] or not v['tn'] or not v['_am'] then continue end
-                
-                -- if v['id'] ~= 'Faster Rolls Potion' then continue end
-                -- if v['tn'] ~= 1 then continue end
-                -- if v['_am'] ~= 0 then continue end
-                if v['id'] == 'Faster Rolls Potion' and v['tn'] == 1 and v['_am'] >= 5 then
+        while wait(0.25) do
+            if Fluent.Unloaded then break end
+            local success, err = pcall(function()
+                if Options["AutoRoll"].Value then
+                    local DragonID = Collection:FindSelectedDragonID()
+                    local SelectedDragon = PlayerDragons[tostring(DragonID)]
 
-                    local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Faster Rolls Potion", 2)
-                    local NumberOfPotions = 1
+                    if Options["RollPotion"].Value == "Normal Potions" then
+                        if Randomizer.Utils:CountTable(Options.PrimaryColorS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "Primary", Options.PrimaryColorS.Value, "Colors")
+                        end
 
-                    if PotionRecipeIndex then
-                        NumberOfPotions = v['_am'] / 5
-                        NumberOfPotions = math.floor(NumberOfPotions)
+                        if Randomizer.Utils:CountTable(Options.PrimaryMaterialS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "PrimaryMaterial", Options.PrimaryMaterialS.Value, "Material")
+                        end
 
-                        warn(('Crafting Tier %d Faster Rolls Potion, Amount: %d'):format(v['tn'] + 1, NumberOfPotions))
+                        if Randomizer.Utils:CountTable(Options.SecondaryColorS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "Secondary", Options.SecondaryColorS.Value, "Colors")
+                        end
 
-                        Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
+                        if Randomizer.Utils:CountTable(Options.SecondaryMaterialS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "SecondaryMaterial", Options.SecondaryMaterialS.Value, "Material")
+                        end
+
+                        if Randomizer.Utils:CountTable(Options.TertiaryColorS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "Tertiary", Options.TertiaryColorS.Value, "Colors")
+                        end
+
+                        if Randomizer.Utils:CountTable(Options.TertiaryMaterialS.Value) > 0 then
+                            Randomizer.Utils:Roll(SelectedDragon, "TertiaryMaterial", Options.TertiaryMaterialS.Value, "Material")
+                        end
+                    end
+
+                    if Options["RollPotion"].Value == "Shuffle Potions" then
+                        if Options.PrimaryColorS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.PrimaryColorS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Primary.Color.TextLabel.Text == key  then
+                                    NiggaRandom = false
+                                end
+                                if NiggaRandom then
+                                    game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "ColorShufflePotion")
+                                end
+                            end
+                        end
+                        if Options.PrimaryMaterialS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.PrimaryMaterialS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Primary.Material.TextLabel.Text == key  then
+                                    NiggaRandom = false
+                                end
+                                if NiggaRandom then
+                                    game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "MaterialShufflePotion")
+                                end
+                            end
+                        end
+                        if Options.SecondaryColorS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.SecondaryColorS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Secondary.Color.TextLabel.Text == key  then
+                                    NiggaRandom = false
+                                end
+                                if NiggaRandom then
+                                    game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "ColorShufflePotion")
+                                end
+                            end
+                        end
+                        if Options.SecondaryMaterialS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.SecondaryMaterialS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Secondary.Material.TextLabel.Text == key  then
+                                    NiggaRandom = false
+                                end
+                                if NiggaRandom then
+                                    game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "MaterialShufflePotion")
+                                end
+                            end
+                        end
+                        if Options.TertiaryColorS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.TertiaryColorS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Tertiary.Color.TextLabel.Text == key  then
+                                    NiggaRandom = false
+                                end
+                                if NiggaRandom then
+                                    game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "ColorShufflePotion")
+                                end
+                            end
+                        end
+                        if Options.TertiaryMaterialS.Value ~= nil then
+                            local NiggaRandom = true
+                            for key, _ in pairs(Options.TertiaryMaterialS.Value) do
+                                print(key)
+                                print(DragonID)
+                                if LocalPlayer.PlayerGui.MyDragonsGui.ContainerFrame.Content.SelectFrames.Selected.Content.Pages.Appearance.Tertiary.Material.TextLabel.Text == key then
+                                    NiggaRandom = false
+                                end
+                            end
+                            if  NiggaRandom then
+                                game:GetService("ReplicatedStorage").Remotes.PotionToDragonRemote:InvokeServer(tostring(DragonID), "MaterialShufflePotion")
+                            end
+                        end
                     end
                 end
+            end)
+            if err and Debug then
+                warn("[Caught Error] [AutoRoll]", err)
             end
         end
     end)
-
-    local InstantLuckIIIReady = false
-    local BlazingDiceReady = false
-    local RainbowReady = false
-    local GoldenDiceReady = false
-    local InstantLuckIIIid
-    local BlazingDiceid
-    local Rainbowid
-    local GoldenDiceid
 
     spawn(function()
-        while task.wait(1) do
-            for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-                if not v['id'] or not v['tn'] or not v['_am'] then continue end
-
-                if v['id'] == 'Faster Rolls Potion' and v['tn'] == 2 and v['_am'] >= 1 then
-                    Network["Consumables_Consume"]:InvokeServer(i, (v['_am']))
+        while task.wait(10) do
+            if Fluent.Unloaded then break end
+            local success, err = pcall(function()
+                if Options["AutoBuy"].Value then                   
+                    if Randomizer.Utils:CountTable(Options.ShopPotion.Value) > 0 then
+                        for key, _ in pairs(Options.ShopPotion.Value) do
+                            game:GetService("ReplicatedStorage").Remotes.PurchaseItemRemote:FireServer({ItemName = key, Amount = Options["SnipeAmount"].Value})
+                        end
+                    end
                 end
-
-                if v['id'] == 'Lucky Potion' and v['tn'] == 6 and v['_am'] >= 1 then
-                    Network["Consumables_Consume"]:InvokeServer(i, (v['_am']))
-                end
-
-                if v['id'] == 'Lucky Potion' and v['tn'] == 7 and v['_am'] >= 1 then
-                    Network["Consumables_Consume"]:InvokeServer(i, (v['_am']))
-                end
-
-                if v['id'] == 'Coins Potion' and v['tn'] == 6 and v['_am'] >= 1 then
-                    Network["Consumables_Consume"]:InvokeServer(i, (v['_am']))
-                end
-
-                if v['id'] == 'Coins Potion' and v['tn'] == 7 and v['_am'] >= 1 then
-                    Network["Consumables_Consume"]:InvokeServer(i, (v['_am']))
-                end
-                
-
-                if v['id'] == 'Golden Dice Potion' and v['tn'] == 1 and v['_am'] ~= 0 then
-                    GoldenDiceReady = true
-                    GoldenDiceid = i
-                end
-                if v['id'] == 'Rainbow Dice Potion' and v['tn'] == 1 and v['_am'] ~= 0 then
-                    RainbowReady = true
-                    Rainbowid = i
-                end
-                if v['id'] == 'Blazing Dice Potion' and v['tn'] == 1 and v['_am'] ~= 0 then
-                    BlazingDiceReady = true
-                    BlazingDiceid = i
-                end
-                if v['id'] == 'Instant Luck Potion' and v['tn'] == 3 and v['_am'] ~= 0 then
-                    InstantLuckIIIReady = true
-                    InstantLuckIIIid = i
-                end
-                -- print(InstantLuckIIIid, BlazingDiceid, Rainbowid, GoldenDiceid)
-                -- print(InstantLuckIIIReady, BlazingDiceReady, RainbowReady, GoldenDiceReady)
-                if InstantLuckIIIReady and BlazingDiceReady and RainbowReady and GoldenDiceReady then
-                    task.wait(1.75)
-                    Network["Consumables_Consume"]:InvokeServer(InstantLuckIIIid, 1)
-                    task.wait(1)
-                    Network["Consumables_Consume"]:InvokeServer(BlazingDiceid, 1)
-                    task.wait(1)
-                    Network["Consumables_Consume"]:InvokeServer(Rainbowid, 1)
-                    task.wait(1)
-                    Network["Consumables_Consume"]:InvokeServer(GoldenDiceid, 1)
-
-                    task.wait(5)
-                    InstantLuckIIIReady = false
-                    BlazingDiceReady = false
-                    RainbowReady = false
-                    GoldenDiceReady = false
-                end
-
-
-            end
-            -- for i, v in next, DataManager:GetConsumable() do
-            --     print(v, v.Name, v['id'], v['tn'], v['_am'])
-            -- end
-        end
-    end)
-
-    -- spawn(function()
-    --     while task.wait() do
-            
-    --     end
-    -- end)
-
-    -- vv Craft Tier 2 Lucky Pots vv--
-
-    -- spawn(function()
-    --     while task.wait(1) do
-    --         for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-    --             if not v['id'] or not v['tn'] or not v['_am'] then continue end
-                
-    --             if v['id'] ~= 'Lucky Potion' then continue end
-    --             if v['tn'] ~= 1 then continue end
-    --             if v['_am'] < 3 then continue end
-
-    --             local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 2)
-    --             local NumberOfPotions = 1
-
-    --             if PotionRecipeIndex then
-    --                 NumberOfPotions = v['_am'] / 3
-    --                 NumberOfPotions = math.floor(NumberOfPotions)
-
-    --                 warn(('Crafting Tier %d Lucky Potion, Amount: %d'):format(v['tn'] + 1, NumberOfPotions))
-
-    --                 Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-    --             end
-                
-    --         end
-    --     end
-    -- end)
-
-    -- -- vv Craft Tier 3 Lucky Pots vv--
-
-    -- spawn(function()
-    --     while task.wait(1) do
-    --         for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-    --             if not v['id'] or not v['tn'] or not v['_am'] then continue end
-                
-    --             if v['id'] ~= 'Lucky Potion' then continue end
-    --             if v['tn'] ~= 2 then continue end
-    --             if v['_am'] < 4 then continue end
-
-    --             local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 3)
-    --             local NumberOfPotions = 1
-
-    --             if PotionRecipeIndex then
-    --                 NumberOfPotions = v['_am'] / 4
-    --                 NumberOfPotions = math.floor(NumberOfPotions)
-
-    --                 warn(('Crafting Tier %d Lucky Potion, Amount: %d'):format(v['tn'] + 1, NumberOfPotions))
-
-    --                 Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-    --             end
-                
-    --         end
-    --     end
-    -- end)
-
-    -- -- vv Craft Tier 4 Lucky Pots vv--
-
-    -- spawn(function()
-    --     while task.wait(1) do
-    --         for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-    --             if not v['id'] or not v['tn'] or not v['_am'] then continue end
-                
-    --             if v['id'] ~= 'Lucky Potion' then continue end
-    --             if v['tn'] ~= 3 then continue end
-    --             if v['_am'] < 5 then continue end
-
-    --             local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 4)
-    --             local NumberOfPotions = 1
-
-    --             if PotionRecipeIndex then
-    --                 NumberOfPotions = v['_am'] / 5
-    --                 NumberOfPotions = math.floor(NumberOfPotions)
-
-    --                 warn(('Crafting Tier %d Lucky Potion, Amount: %d'):format(v['tn'] + 1, NumberOfPotions))
-
-    --                 Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-    --             end
-                
-    --         end
-    --     end
-    -- end)
-
-    -- spawn(function()
-    --     while task.wait(20) do
-    --         for i, v in next, DataManager:Get()["Inventory"]["Fruit"] do
-    --             if not v['id'] or not v['_am'] then continue end
-                
-    --             if v['id'] == 'Rainbow' or v['id'] == 'Orange' or v['id'] == 'Watermelon' then continue end
-    --             if v['sh'] then continue end
-    --             if v['_am'] < 100 then continue end
-
-    --             warn(('Using %s %s to upgrade Fruits Machine'):format(100, v['id'], tostring(v)))
-
-    --             -- local args = {
-    --             --     [1] = {
-    --             --         [tostring(v)] = 100
-    --             --     },
-    --             --     [2] = false
-    --             -- }
-                
-    --             -- game:GetService("ReplicatedStorage").Network.UpgradeFruitsMachine_Activate:InvokeServer(unpack(args))
-                
-    --         end
-    --     end
-    -- end)
-    function DataManager:GetPotion(name, tier)
-        for i, v in next, DataManager:Get()["Inventory"]["Consumable"] do
-            if not v['id'] or not v['tn'] or not v['_am'] then continue end
-    
-            if v['id'] == name and v['tn'] == tier then
-                return v
-                -- {
-                --     "id" : "Walkspeed Potion"
-                --     "tn" : 3
-                --     "_am" : 989
-                -- }
-            end
-        end
-    
-        return {
-            ["id"] = name,
-            ["tn"] = tier,
-            ["_am"] = 0
-        }
-    end
-    
-    function DataManager:GetFruit(name)
-        for i, v in next, DataManager:Get()["Inventory"]["Fruit"] do
-            if not v['id'] or not v['_am'] or v['sh'] then continue end
-    
-            if v['id'] == name then
-                return v
-            end
-        end
-    
-        return {
-            ["id"] = name,
-            ["_am"] = 0
-        }
-    end
-    
-    function DataManager:GetPotionRecipeIndex(id, tn)
-        local PotionCraftingMachine = require(game:GetService("ReplicatedStorage").Library.Directory.CraftingMachines).PotionCraftingMachine
-    
-        for i,v in next, PotionCraftingMachine.Recipes do
-            local ResultData = v['Result']['_data']
-    
-            if ResultData and ResultData['id'] == id and ResultData['tn'] == tn then
-                return tonumber(v['RecipeIndex'])
-            end
-        end
-    
-        return nil
-    end
-    
-    function DataManager:CraftInstantLuckIII2()
-        local Potions = {
-            ['Instant Luck III'] = self:GetPotion("Instant Luck Potion", 3),
-            ['Instant Luck II'] = self:GetPotion("Instant Luck Potion", 2),
-            ['Instant Luck I'] = self:GetPotion("Instant Luck Potion", 1),
-            ['Rainbow Dice Potion'] = self:GetPotion("Rainbow Dice Potion", 1),
-            ['Lucky Potion V'] = self:GetPotion("Lucky Potion", 5),
-            ['Lucky Potion IV'] = self:GetPotion("Lucky Potion", 4),
-            ['Lucky Potion III'] = self:GetPotion("Lucky Potion", 3),
-            ['Lucky Potion II'] = self:GetPotion("Lucky Potion", 2),
-            ['Lucky Potion I'] = self:GetPotion("Lucky Potion", 1),
-            ['Golden Dice Potion'] = self:GetPotion("Golden Dice Potion", 1),
-            ['Rainbow Fruit'] = self:GetFruit("Rainbow"),
-            ['Orange Fruit'] = self:GetFruit("Orange")
-        }
-    
-        -- Craft Instant Luck III
-        if Potions['Instant Luck II']['_am'] >= 3 and Potions['Rainbow Dice Potion']['_am'] >= 2 then
-        
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Instant Luck Potion", 3)
-    
-            Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-            return
-        end
-    
-        -- Craft Instant Luck II
-        if Potions['Instant Luck I']['_am'] >= 3 and Potions['Rainbow Dice Potion']['_am'] >= 2 then
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Instant Luck Potion", 2)
-    
-            Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-            return
-        end
-    
-        -- Craft Instant Luck I
-        if Potions['Rainbow Dice Potion']['_am'] >= 2 and Potions['Golden Dice Potion']['_am'] >= 3 then
-    
-            if Potions['Lucky Potion V']['_am'] < 2 then
-                -- 1-5 
-                
-                -- Craft Lucky Potion V
-                if Potions['Lucky Potion IV']['_am'] >= 5 and Potions['Orange Fruit']['_am'] >= 12 then
-    
-                    local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 5)
-    
-                    Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-                    
-                    return
-                end
-    
-                -- Craft Lucky Potion IV
-                if Potions['Lucky Potion III']['_am'] >= 5 then
-    
-                    local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 4)
-    
-                    Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-                    return
-                end
-                
-                -- Craft Lucky Potion III
-                if Potions['Lucky Potion II']['_am'] >= 4 then
-    
-                    local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 3)
-    
-                    Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-                    
-                    return
-                end
-    
-                -- Craft Lucky Potion II
-                if Potions['Lucky Potion I']['_am'] >= 3 then
-    
-                    local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 2)
-    
-                    Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-                    
-                    return
-                end
-                
-                return
-            end
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Instant Luck Potion", 1)
-    
-            Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-            return
-        end
-    
-        -- Craft Golden Dice Potion
-        if Potions['Golden Dice Potion']['_am'] < 3 and Potions['Lucky Potion III']['_am'] >= 2 and Potions['Orange Fruit']['_am'] >= 7 then
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Golden Dice Potion", 1)
-    
-            Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-            return
-        end
-    
-        if Potions['Rainbow Dice Potion']['_am'] < 2 and Potions['Golden Dice Potion']['_am'] >= 3 and Potions['Lucky Potion IV']['_am'] >= 2 then
-            -- Craft Rainbow Dice Potion
-    
-            if Potions['Rainbow Fruit']['_am'] < 4 then
-    
-                for i, v in next, DataManager:Get()["Inventory"]["Fruit"] do
-                    if not v['id'] or not v['_am'] then continue end
-                    
-                    if v['id'] == 'Rainbow' or v['id'] == 'Orange' or v['id'] == 'Watermelon' then continue end
-                    if v['sh'] then continue end
-                    if v['_am'] < 100 then continue end
-    
-                    local args = {
-                        [1] = {
-                            [tostring(i)] = 100
-                        },
-    
-                        [2] = false
-                    }
-                    
-                    game:GetService("ReplicatedStorage").Network.UpgradeFruitsMachine_Activate:InvokeServer(unpack(args))
-                    
-                    break
-                end
-    
-                return
-            end
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Rainbow Dice Potion", 1)
-    
-            Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, 1)
-    
-            return
-        end
-    
-        -- Craft Lucky Potion II
-        if Potions['Lucky Potion I']['_am'] >= 3 then
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 2)
-            
-            local NumberOfPotions = 1
-    
-            if PotionRecipeIndex then
-                NumberOfPotions = Potions['Lucky Potion I']['_am'] / 3
-                NumberOfPotions = math.floor(NumberOfPotions)
-    
-                --warn(('Crafting Tier 2 Lucky Potion, Amount: %d'):format(NumberOfPotions))
-    
-                Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-            end
-        end
-    
-        -- Craft Lucky Potion III
-        if Potions['Lucky Potion II']['_am'] >= 4 then
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 3)
-    
-            local NumberOfPotions = 1
-    
-            if PotionRecipeIndex then
-                NumberOfPotions = Potions['Lucky Potion II']['_am'] / 4
-                NumberOfPotions = math.floor(NumberOfPotions)
-    
-                --warn(('Crafting Tier 3 Lucky Potion, Amount: %d'):format(NumberOfPotions))
-    
-                Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-            end
-        end
-    
-        -- Craft Lucky Potion IV
-        if Potions['Lucky Potion III']['_am'] >= 5 then
-    
-            local PotionRecipeIndex = DataManager:GetPotionRecipeIndex("Lucky Potion", 4)
-    
-            local NumberOfPotions = 1
-    
-            if PotionRecipeIndex then 
-                NumberOfPotions = Potions['Lucky Potion III']['_am'] / 5
-                NumberOfPotions = math.floor(NumberOfPotions)
-    
-                --warn(('Crafting Tier 4 Lucky Potion, Amount: %d'):format(NumberOfPotions))
-    
-                Network.CraftingMachine_Craft:InvokeServer("PotionCraftingMachine", PotionRecipeIndex, NumberOfPotions)
-            end
-        end
-    end
-    
-    task.spawn(function()
-        while true do task.wait()
-            local Passed, Statement= pcall(function()
-                DataManager:CraftInstantLuckIII2()
             end)
-        
-            if not Passed then
-                warn(Statement)
+            if err and Debug then
+                warn("[Caught Error] [AutoBuy]", err)
             end
         end
     end)
-
-
-
-
-
-
-
-
-
-    -- Real End
 end
-
-
-
