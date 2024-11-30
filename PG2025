@@ -1,5 +1,5 @@
 _G["Roller"] = true -- Roller if false will not work (keep it true)
-local webhookUrl = "https://discord.com/api/webhooks/1244633873212772414/Z7pal_6eO7FQVoL1eQClNXCeVjwfPWfluma1ygNGE5ccSyCGNnKQlO6ore8lRCNneha0" -- Replace with your webhook URL
+local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1" -- Replace with your webhook URL
 
 
 print("The Hexation | Loading")
