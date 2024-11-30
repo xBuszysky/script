@@ -445,7 +445,7 @@ if _G["Roller"] then
             end
             
             spawn(function()
-                while task.wait(3) do
+                while task.wait(60) do
                     updateItems()
                     displayAndNotifyItems()
                     wait(9999)
