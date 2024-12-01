@@ -362,7 +362,6 @@ if _G["Roller"] then
 
             local itemsToFind = {
                 ["God Potion"] = 0,
-                ["Autumn God Potion"] = 0,
                 ["Huge Egg"] = 0
             }
             
