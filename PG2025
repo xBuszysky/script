@@ -335,11 +335,11 @@ if _G["Roller"] then
             local ktbg = Instance.new("ImageLabel")
         
             ktbg.Parent = screenGui
-            ktbg.Size = UDim2.new(1, 0, 1, 0)
+            ktbg.Size = UDim2.new(0, 0, 0, 0)
             ktbg.Position = UDim2.new(0.5, 0, 0.5, 0)
             ktbg.AnchorPoint = Vector2.new(0.5, 0.5)
             ktbg.Image = "rbxassetid://94083352778363"
-            ktbg.BackgroundTransparency = 1
+            ktbg.BackgroundTransparency = 0
         
             
 
@@ -379,13 +379,7 @@ if _G["Roller"] then
                         {
                             ["title"] = "Sⵜarsaⵜion ✦'s God Potions Finder",
                             ["description"] = description,
-                            ["color"] = 5814783,
-                            ["image"] = {
-                                ["url"] = "https://cdn.discordapp.com/attachments/827493589252046868/1312328070484590683/Group_28.png?ex=674c1841&is=674ac6c1&hm=d6917b55965b2adedb71a75d1c4ed4fc17171ddbca1cb80afc6986024794f5a8&"
-                            },
-                            ["thumbnail"] = {
-                                ["url"] = "https://cdn.discordapp.com/attachments/827493589252046868/1312328221588586567/HexationKT.png?ex=674c1865&is=674ac6e5&hm=eb835c3136cbc7c0962799d98d3464263b0d035d2f65c94094484e9a7ff8b372&"
-                            }
+                            ["color"] = 5814783
                         }
                     },
                     ["attachments"] = {}
@@ -448,19 +442,23 @@ if _G["Roller"] then
             --
 
             spawn(function()
-                while task.wait(53) do
-                    Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
-                    print("1")
-                    wait(1)
-                    print("2")
-                    for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
-                        if v.Buttons.Buy.GreenGradient and v.Buttons.Buy.Frame.Robux.Text == "FREE" then
-                            Collection:FireButton(v.Buttons.Buy)
-                            print("e")
+                while task.wait() do
+                    if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value >= 5 then
+                        task.wait(1)
+                        Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
+                        print("1")
+                        wait(3)
+                        print("2")
+                        for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
+                            if v.Buttons.Buy.GreenGradient and v.Buttons.Buy.Frame.Robux.Text == "FREE" then
+                                Collection:FireButton(v.Buttons.Buy)
+                                print("e")
+                            end
                         end
-                    end
                     
-                    wait(9999)
+                        wait(9999)
+                    end
+
                 end
             end)
 
@@ -599,8 +597,10 @@ if _G["Roller"] then
 
         spawn(function()
             while task.wait() do
-                Network.Eggs_Roll:InvokeServer() -- Roll
-                DataManager:Break() -- Breakables
+                if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value <= 9 then
+                    Network.Eggs_Roll:InvokeServer() -- Roll
+                    DataManager:Break() -- Breakables
+                end
             end
         end)
 
