@@ -444,6 +444,26 @@ if _G["Roller"] then
                 end
             end
             
+            
+            --
+
+            spawn(function()
+                while task.wait(53) do
+                    Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
+                    print("1")
+                    wait(1)
+                    print("2")
+                    for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
+                        if v.Buttons.Buy.GreenGradient and v.Buttons.Buy.Frame.Robux.Text == "FREE" then
+                            Collection:FireButton(v.Buttons.Buy)
+                            print("e")
+                        end
+                    end
+                    
+                    wait(9999)
+                end
+            end)
+
             spawn(function()
                 while task.wait(60) do
                     updateItems()
