@@ -1,9 +1,6 @@
-_G["Roller"] = true
-local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1"
-_G.ItemsToFind = {
-    ["God Potion"] = 0,
-    ["Huge Egg"] = 0
-}
+_G["Roller"] = true -- Roller if false will not work (keep it true)
+local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1" -- Replace with your webhook URL
+
 
 print("The Hexation | Loading")
 ------------------------------ [ Variables ] ------------------------------
@@ -302,7 +299,6 @@ if _G["Roller"] then
             while task.wait(1) do
                 game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false) -- Disable leaderboard
                 game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false) -- Disable Chat  
-                game:GetService("Players").LocalPlayer.PlayerGui.BonusRoll.Enabled = false
             end
         end)
 
@@ -363,99 +359,115 @@ if _G["Roller"] then
             --     end
             -- end
             local foreverPacks = DataManager:Get()["ForeverPacks"]
-            local claimedItem = nil
-            local unclaimedItems = {}
 
-            local function sendWebhook(claimed, unclaimed)
+            local itemsToFind = {
+                ["God Potion"] = 0,
+                ["Huge Egg"] = 0
+            }
+            
+            local function sendWebhook(itemsFound)
                 local descriptions = {}
-                if claimed then
-                    table.insert(descriptions, claimed)
-                end
-                for itemName, amount in pairs(unclaimed) do
-                    table.insert(descriptions, itemName .. " x" .. amount .. " (Unclaimed)")
+                for itemName, amount in pairs(itemsFound) do
+                    table.insert(descriptions, itemName .. " x" .. amount)
                 end
                 local description = "Username: " .. PlayerName .. "\n" .. table.concat(descriptions, "\n")
+            
                 local data = {
                     ["content"] = nil,
                     ["embeds"] = {
                         {
-                            ["title"] = "Sⵜarsaⵜion ✦'s Pet Go Items Finder",
+                            ["title"] = "Sⵜarsaⵜion ✦'s God Potions Finder",
                             ["description"] = description,
                             ["color"] = 5814783
                         }
                     },
                     ["attachments"] = {}
                 }
+            
                 request({
                     Url = webhookUrl,
                     Method = "POST",
-                    Headers = { ["Content-Type"] = "application/json" },
+                    Headers = {
+                        ["Content-Type"] = "application/json"
+                    },
                     Body = game:GetService("HttpService"):JSONEncode(data)
                 })
             end
             
             local function updateItems()
-                local firstSlotItemId = foreverPacks["Slots"][1]["Items"][1]["data"]["id"]
-                
-                for itemName in pairs(_G.ItemsToFind) do
-                    _G.ItemsToFind[itemName] = 0
+                for itemName in pairs(itemsToFind) do
+                    itemsToFind[itemName] = 0 -- Reset count before scanning
                 end
-                
+            
                 for _, slot in pairs(foreverPacks["Slots"]) do
                     for _, item in pairs(slot["Items"]) do
                         local itemId = item["data"]["id"]
                         local itemAmount = item["data"]["_am"]
-                        
-                        if _G.ItemsToFind[itemId] ~= nil then
-                            _G.ItemsToFind[itemId] = _G.ItemsToFind[itemId] + (itemAmount or 0)
-                            
-                            -- Special handling for first slot
-                            if itemId == firstSlotItemId then
-                                claimedItem = itemId .. " x" .. itemAmount .. " (Claimed)"
-                            else
-                                if not unclaimedItems[itemId] then
-                                    unclaimedItems[itemId] = 0
-                                end
-                                unclaimedItems[itemId] = unclaimedItems[itemId] + itemAmount
-                            end
+                        if itemsToFind[itemId] ~= nil then
+                            itemsToFind[itemId] = itemsToFind[itemId] + (itemAmount or 0)
                         end
                     end
                 end
             end
             
-            local function claimFirstFreeItem()
-                Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
-                wait(3)
-                for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
-                    local buyButton = v:FindFirstChild("Buttons") and v.Buttons:FindFirstChild("Buy")
-                    if buyButton and buyButton:FindFirstChild("Frame") and buyButton.Frame:FindFirstChild("Robux") then
-                        if buyButton.Frame.Robux.Text == "FREE" then
-                            Collection:FireButton(buyButton)
-                            print("Free item claimed")
-                            break
+            local function displayAndNotifyItems()
+                local foundItems = {}
+                for itemName, count in pairs(itemsToFind) do
+                    if count > 0 then
+                        print(itemName .. " found with amount: " .. count)
+                        if not ktbg:FindFirstChild(itemName) then
+                            local label = Instance.new("TextLabel")
+                            label.Parent = ktbg
+                            label.Name = itemName
+                            label.Size = UDim2.new(0, 0, 0, 0)
+                            label.Position = UDim2.new(0.5, 0, 0.22, 0)
+                            label.AnchorPoint = Vector2.new(0.5, 0.5)
+                            label.Text = "Found " .. itemName .. " x" .. count
+                            label.FontFace = Font.new("rbxasset://fonts/families/FredokaOne.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+                            label.TextSize = 32
                         end
+                        foundItems[itemName] = count
+                    else
+                        print(itemName .. " not found.")
                     end
+                end
+            
+                if next(foundItems) then
+                    sendWebhook(foundItems) -- Send one webhook with all found items
                 end
             end
             
+            
+            --
+
             spawn(function()
                 while task.wait() do
                     if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value >= 5 then
-                        updateItems()
-                        claimFirstFreeItem()
-                        wait(5)
-                        updateItems()
-                        
-                        if claimedItem or next(unclaimedItems) then
-                            sendWebhook(claimedItem, unclaimedItems)
-                            claimedItem = nil
-                            unclaimedItems = {}
+                        task.wait(1)
+                        Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
+                        print("1")
+                        wait(3)
+                        print("2")
+                        for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
+                            if v.Buttons.Buy.GreenGradient and v.Buttons.Buy.Frame.Robux.Text == "FREE" then
+                                Collection:FireButton(v.Buttons.Buy)
+                                print("e")
+                            end
                         end
+                    
                         wait(9999)
                     end
+
                 end
             end)
 
+            spawn(function()
+                while task.wait(60) do
+                    updateItems()
+                    displayAndNotifyItems()
+                    wait(9999)
+                end
+            end)
 
 
             local imageButton = Instance.new("ImageButton")
@@ -584,7 +596,7 @@ if _G["Roller"] then
 
         spawn(function()
             while task.wait() do
-                if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value <= 6 then
+                if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value <= 9 then
                     Network.Eggs_Roll:InvokeServer() -- Roll
                     DataManager:Break() -- Breakables
                 end
@@ -620,5 +632,3 @@ if _G["Roller"] then
 
     end
 end
-
-
