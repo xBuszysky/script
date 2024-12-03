@@ -2,7 +2,6 @@ _G["Roller"] = true
 local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1"
 _G.ItemsToFind = {
     ["God Potion"] = 0,
-    ["Autumn God Potion"] = 0,
     ["Huge Egg"] = 0
 }
 
