@@ -5,7 +5,6 @@ local ApiKey = "yc%g5@qWsBPp4IuYydzib9zbyKEM!ujH!w@e0wYm1$5y$0o_a-9TzBsKEHmN7fQr
 
 _G.ItemsToFind = {
     ["God Potion"] = 0,
-    ["Autumn God Potion"] = 0,
     ["Huge Egg"] = 0,
 }
 
