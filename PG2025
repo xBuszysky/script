@@ -1,8 +1,12 @@
 _G["Roller"] = true
 local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1"
+_G["ShetBestEndPoint"] = "https://api.sheetbest.com/sheets/ef538e35-fd5f-4296-846f-677384125e2d"
+local ApiKey = "yc%g5@qWsBPp4IuYydzib9zbyKEM!ujH!w@e0wYm1$5y$0o_a-9TzBsKEHmN7fQr"
+
 _G.ItemsToFind = {
     ["God Potion"] = 0,
-    ["Huge Egg"] = 0
+    ["Autumn God Potion"] = 0,
+    ["Huge Egg"] = 0,
 }
 
 print("The Hexation | Loading")
@@ -302,7 +306,7 @@ if _G["Roller"] then
             while task.wait(1) do
                 game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false) -- Disable leaderboard
                 game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false) -- Disable Chat  
-                game:GetService("Players").LocalPlayer.PlayerGui.BonusRoll.Enabled = false
+                
             end
         end)
 
@@ -364,12 +368,93 @@ if _G["Roller"] then
             -- end
             local foreverPacks = DataManager:Get()["ForeverPacks"]
             local claimedItem = nil
+            local claimedAmount = nil
             local unclaimedItems = {}
 
+                local TimeZoneOffset = 7 * 3600
+                local function getCurrentGMT7Time()
+                    local utcTime = os.time()
+                    local gmt7Time = os.date("!%Y-%m-%dT%H:%M:%S", utcTime + TimeZoneOffset)
+                    return gmt7Time
+                end
+
+            
+            -- Function to send data to Google Sheet
+            local function sendToGoogleSheet(username, claimedName, claimedAmount, unclaimed)
+                -- If there are no unclaimed items, create a single entry with just the claimed item
+                if next(unclaimed) == nil then
+                    local dataToSend = {
+                        {
+                            ["Username"] = username,
+                            ["Claimed Item Name"] = claimedName or "None",
+                            ["Claimed Item Amounts"] = claimedAmount or 0,
+                            ["Unclaimed Item Name"] = "None",
+                            ["Unclaimed Item Amounts"] = 0,
+                            ["Date and Time (GMT+7)"] = getCurrentGMT7Time()
+                        }
+                    }
+            
+                    local jsonData = HttpService:JSONEncode(dataToSend)
+            
+                    local success, response = pcall(function()
+                        return request({
+                            Url = _G["ShetBestEndPoint"],
+                            Method = "POST",
+                            Headers = {
+                                ["Content-Type"] = "application/json",
+                                ["X-Api-Key"] = ApiKey
+                            },
+                            Body = jsonData
+                        })
+                    end)
+            
+                    if success and response.StatusCode == 200 then
+                        print("Data successfully sent to Google Sheets for claimed item!")
+                    else
+                        warn("Failed to send data: " .. (response and response.Body or "Unknown error"))
+                    end
+                    return
+                end
+            
+                -- Original code for handling unclaimed items remains the same
+                for itemName, amount in pairs(unclaimed) do
+                    local dataToSend = {
+                        {
+                            ["Username"] = username,
+                            ["Claimed Item Name"] = claimedName or "None",
+                            ["Claimed Item Amounts"] = claimedAmount or 0,
+                            ["Unclaimed Item Name"] = itemName,
+                            ["Unclaimed Item Amounts"] = amount,
+                            ["Date and Time (GMT+7)"] = getCurrentGMT7Time()
+                        }
+                    }
+            
+                    local jsonData = HttpService:JSONEncode(dataToSend)
+            
+                    local success, response = pcall(function()
+                        return request({
+                            Url = _G["ShetBestEndPoint"],
+                            Method = "POST",
+                            Headers = {
+                                ["Content-Type"] = "application/json",
+                                ["X-Api-Key"] = ApiKey
+                            },
+                            Body = jsonData
+                        })
+                    end)
+            
+                    if success and response.StatusCode == 200 then
+                        print("Data successfully sent to Google Sheets for " .. itemName .. "!")
+                    else
+                        warn("Failed to send data: " .. (response and response.Body or "Unknown error"))
+                    end
+                end
+            end
+            
             local function sendWebhook(claimed, unclaimed)
                 local descriptions = {}
                 if claimed then
-                    table.insert(descriptions, claimed)
+                    table.insert(descriptions, claimed .. " x" .. claimedAmount .. " (Claimed)")
                 end
                 for itemName, amount in pairs(unclaimed) do
                     table.insert(descriptions, itemName .. " x" .. amount .. " (Unclaimed)")
@@ -390,28 +475,32 @@ if _G["Roller"] then
                     Url = webhookUrl,
                     Method = "POST",
                     Headers = { ["Content-Type"] = "application/json" },
-                    Body = game:GetService("HttpService"):JSONEncode(data)
+                    Body = HttpService:JSONEncode(data)
                 })
             end
             
             local function updateItems()
+                -- Reset unclaimedItems before updating
+                unclaimedItems = {}
+            
                 local firstSlotItemId = foreverPacks["Slots"][1]["Items"][1]["data"]["id"]
-                
+            
                 for itemName in pairs(_G.ItemsToFind) do
                     _G.ItemsToFind[itemName] = 0
                 end
-                
+            
                 for _, slot in pairs(foreverPacks["Slots"]) do
                     for _, item in pairs(slot["Items"]) do
                         local itemId = item["data"]["id"]
                         local itemAmount = item["data"]["_am"]
-                        
+            
                         if _G.ItemsToFind[itemId] ~= nil then
                             _G.ItemsToFind[itemId] = _G.ItemsToFind[itemId] + (itemAmount or 0)
-                            
+            
                             -- Special handling for first slot
                             if itemId == firstSlotItemId then
-                                claimedItem = itemId .. " x" .. itemAmount .. " (Claimed)"
+                                claimedItem = itemId
+                                claimedAmount = itemAmount or 0
                             else
                                 if not unclaimedItems[itemId] then
                                     unclaimedItems[itemId] = 0
@@ -424,9 +513,10 @@ if _G["Roller"] then
             end
             
             local function claimFirstFreeItem()
-                Collection:FireButton(game:GetService("Players").LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
+                repeat task.wait() until LocalPlayer.PlayerGui.Main.Left.Tools.Visible
+                Collection:FireButton(LocalPlayer.PlayerGui.Main.Left.Tools.ExclusiveShop)
                 wait(3)
-                for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
+                for _, v in pairs(LocalPlayer.PlayerGui.ExclusiveShop.Frame.ItemsFrame.Items["Row - Forever Pack"].Pack.Tiles:GetChildren()) do
                     local buyButton = v:FindFirstChild("Buttons") and v.Buttons:FindFirstChild("Buy")
                     if buyButton and buyButton:FindFirstChild("Frame") and buyButton.Frame:FindFirstChild("Robux") then
                         if buyButton.Frame.Robux.Text == "FREE" then
@@ -441,14 +531,22 @@ if _G["Roller"] then
             spawn(function()
                 while task.wait() do
                     if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value >= 5 then
+                        task.wait(1)
                         updateItems()
                         claimFirstFreeItem()
-                        wait(5)
+                        wait(1)
                         updateItems()
-                        
+            
                         if claimedItem or next(unclaimedItems) then
                             sendWebhook(claimedItem, unclaimedItems)
+                            sendToGoogleSheet(
+                                game.Players.LocalPlayer.Name,
+                                claimedItem,
+                                claimedAmount,
+                                unclaimedItems
+                            )
                             claimedItem = nil
+                            claimedAmount = nil
                             unclaimedItems = {}
                         end
                         wait(9999)
@@ -584,10 +682,8 @@ if _G["Roller"] then
 
         spawn(function()
             while task.wait() do
-                if LocalPlayer.leaderstats["\240\159\142\178 Rolls"].Value <= 6 then
-                    Network.Eggs_Roll:InvokeServer() -- Roll
-                    DataManager:Break() -- Breakables
-                end
+                Network.Eggs_Roll:InvokeServer() -- Roll
+                DataManager:Break() -- Breakables
             end
         end)
 
@@ -605,6 +701,22 @@ if _G["Roller"] then
         --         end
         --     end
         -- end)
+
+        spawn(function()
+            while task.wait() do
+                if LocalPlayer.PlayerGui.DailyRoll.Enabled then
+                    repeat Collection:FireButton(LocalPlayer.PlayerGui.DailyRoll.Frame.Close) until not LocalPlayer.PlayerGui.DailyRoll.Enabled
+                end
+                
+                if LocalPlayer.PlayerGui.BonusRoll.Enabled then
+                    repeat Collection:FireButton(LocalPlayer.PlayerGui.BonusRoll.Frame.Close) until not LocalPlayer.PlayerGui.BonusRoll.Enabled
+                end
+
+                if LocalPlayer.PlayerGui.Changelog.Enabled then
+                    repeat Collection:FireButton(LocalPlayer.PlayerGui.Changelog.Frame.Close) until not LocalPlayer.PlayerGui.Changelog.Enabled
+                end
+            end
+        end)
 
         spawn(function()
             while task.wait() do
