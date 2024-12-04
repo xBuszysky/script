@@ -1,10 +1,11 @@
 _G["Roller"] = true
-local webhookUrl = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1"
-_G["ShetBestEndPoint"] = "https://api.sheetbest.com/sheets/ef538e35-fd5f-4296-846f-677384125e2d"
-local ApiKey = "yc%g5@qWsBPp4IuYydzib9zbyKEM!ujH!w@e0wYm1$5y$0o_a-9TzBsKEHmN7fQr"
+_G["WebHookURL"] = "https://discord.com/api/webhooks/1297224517000888320/dR_aea6xmHeQCD2AzdtNxjZYtr1O1TJih9qStofVaWSfVF050ZDCx--MSIy_wcKpxNx1"
+_G["ShetBestEndPoint"] = "https://api.sheetbest.com/sheets/00f304b9-70fa-402d-b0ce-bfb6a5dc6f5a"
+_G["ApiKey"] = "X6C3MdV4sMz6Xo%BF3bK58d9%2Zb9fH9@vi$PVfq80oX@3RzbB%2yqS!FaJdalB3"
 
 _G.ItemsToFind = {
     ["God Potion"] = 0,
+    --["Autumn God Potion"] = 0,
     ["Huge Egg"] = 0,
 }
 
@@ -401,7 +402,7 @@ if _G["Roller"] then
                             Method = "POST",
                             Headers = {
                                 ["Content-Type"] = "application/json",
-                                ["X-Api-Key"] = ApiKey
+                                ["X-Api-Key"] = _G["ApiKey"]
                             },
                             Body = jsonData
                         })
@@ -436,7 +437,7 @@ if _G["Roller"] then
                             Method = "POST",
                             Headers = {
                                 ["Content-Type"] = "application/json",
-                                ["X-Api-Key"] = ApiKey
+                                ["X-Api-Key"] = _G["ApiKey"]
                             },
                             Body = jsonData
                         })
@@ -453,25 +454,25 @@ if _G["Roller"] then
             local function sendWebhook(claimed, unclaimed)
                 local descriptions = {}
                 if claimed then
-                    table.insert(descriptions, claimed .. " x" .. claimedAmount .. " (Claimed)")
+                    table.insert(descriptions, claimed .. " x" .. claimedAmount .. " (รับแล้ว)")
                 end
                 for itemName, amount in pairs(unclaimed) do
-                    table.insert(descriptions, itemName .. " x" .. amount .. " (Unclaimed)")
+                    table.insert(descriptions, itemName .. " x" .. amount .. " (ยังไม่ได้รับ)")
                 end
-                local description = "Username: " .. PlayerName .. "\n" .. table.concat(descriptions, "\n")
+                local description = "ชื่อบัญชี: " .. PlayerName .. "\n" .. table.concat(descriptions, "\n")
                 local data = {
                     ["content"] = nil,
                     ["embeds"] = {
                         {
                             ["title"] = "Sⵜarsaⵜion ✦'s Pet Go Items Finder",
                             ["description"] = description,
-                            ["color"] = 5814783
+                            ["color"] = 16711680
                         }
                     },
                     ["attachments"] = {}
                 }
                 request({
-                    Url = webhookUrl,
+                    Url = _G["WebHookURL"],
                     Method = "POST",
                     Headers = { ["Content-Type"] = "application/json" },
                     Body = HttpService:JSONEncode(data)
@@ -494,12 +495,12 @@ if _G["Roller"] then
                         local itemAmount = item["data"]["_am"]
             
                         if _G.ItemsToFind[itemId] ~= nil then
-                            _G.ItemsToFind[itemId] = _G.ItemsToFind[itemId] + (itemAmount or 0)
+                            _G.ItemsToFind[itemId] = _G.ItemsToFind[itemId] + (itemAmount)
             
                             -- Special handling for first slot
                             if itemId == firstSlotItemId then
                                 claimedItem = itemId
-                                claimedAmount = itemAmount or 0
+                                claimedAmount = itemAmount
                             else
                                 if not unclaimedItems[itemId] then
                                     unclaimedItems[itemId] = 0
