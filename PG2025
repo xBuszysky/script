@@ -8,6 +8,8 @@ _G.ItemsToFind = {
     ["Huge Egg"] = 0,
     ["Diamond Fishing Rod"] = 0,
     ["Frozen Fishing Rod"] = 0,
+    ["Huge Jolly Moose"] = 0,
+    ["Titanic Reindeer Cat"] = 0,
 }
 
 print("The Hexation | Loading")
